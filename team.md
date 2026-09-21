@@ -1,3 +1,4 @@
+
 # Team 2
 
 ## Zhiao Chu
@@ -9,3 +10,11 @@ Hello everyone, My name is Yuchen Bao, you can also call me Allen.
 This is my last semester in the Master of Science in Computer Science program at BU. During my undergraduate studies, I mainly focused on NLP. I can use Python, but I have not used it much for software engineering projects.
 For software development, I usually work with TypeScript. I took some courses about web app development,so I am familiar with React, Next.js, and styled-components. For back-end development, I am not very experienced with more complex back-end logic or frameworks such as Spring. I can handle some basic back-end logic with Next.js and basic database operations with MongoDB or non-relational database such as MySQL.
 I’m looking forward to working with you, contributing to the team, and learning from each other!
+
+## Yuexian Feng
+
+Hello everyone, my name is Yuexian Feng, and you can also call me Luna.
+
+I am currently pursuing my Master of Science in Software Development at Boston University. I have experience with Python, JavaScript, and web application development. Through my coursework, I have worked on both front-end and back-end development and gained experience with technologies such as React, Node.js, Express, and MongoDB.
+
+I am looking forward to working with everyone on this project, improving my software engineering skills, and learning from the team!
