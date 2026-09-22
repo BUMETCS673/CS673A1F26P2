@@ -3,7 +3,7 @@
 
 ## The Anh Tran
 Hi everyone, my name is The Anh Tran, you can call me Bill. My main programming language is Python and C++. I'm currently developing a desktop application for myself using NodeJS for my frontend and Python for my backend
-I'm currently a Graduate student i Computer Science and this is my second to last semester. Nice to meet you all.
+I'm currently a Graduate student in Computer Science and this is my second to last semester. Nice to meet you all.
 
 
 ## Zhiao Chu
