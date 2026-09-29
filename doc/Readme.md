@@ -1,1 +1,1 @@
-This folder contains all required documents, including SPPP, SDD, STD, meetingminutes and progressreport for iteration 0
+This folder contains all required documents, including SPPP, SDD, STD, meetingminutes and progressreport
