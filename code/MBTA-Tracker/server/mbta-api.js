@@ -256,3 +256,26 @@ export {
   getSchedules,
   getVehicles,
 };
+
+// Canonical stop patterns give platform order for each travel direction.
+export async function getBNetwork() {
+  const query = new URLSearchParams({ "filter[route]": "Green-B", include: "representative_trip.stops,representative_trip.stops.parent_station" });
+  const document = await fetchMbtaJson("/route_patterns", query, 3600);
+  const included = new Map((document.included ?? []).map((item) => [`${item.type}:${item.id}`, item]));
+  const patterns = document.data.filter((item) => item.attributes.canonical).map((pattern) => {
+    const trip = included.get(`trip:${pattern.relationships.representative_trip.data.id}`);
+    const stops = [];
+    for (const ref of trip?.relationships.stops?.data ?? []) {
+      const platform = included.get(`stop:${ref.id}`);
+      if (!platform) continue;
+      const id = platform.relationships?.parent_station?.data?.id ?? platform.id;
+      const station = included.get(`stop:${id}`) ?? platform;
+      const previous = stops[stops.length - 1];
+      if (previous?.id === id) previous.platforms.push(platform.id);
+      else stops.push({ id, name: station.attributes.name, platforms: [platform.id] });
+    }
+    return { direction: pattern.attributes.direction_id, destination: trip?.attributes.headsign, stops };
+  });
+  if (patterns.length < 2 || patterns.some((pattern) => !pattern.stops.length)) throw new MbtaApiError("B-branch stop patterns are unavailable.", 502);
+  return { patterns, stops: patterns.find((pattern) => pattern.direction === 0).stops };
+}
