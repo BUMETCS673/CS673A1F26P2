@@ -35,7 +35,6 @@ yarn-error.log*
 !.env.example
 
 # local-only project files
-/lib/
 /README.local.md
 
 # vercel
