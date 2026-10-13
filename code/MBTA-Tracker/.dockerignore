@@ -1,0 +1,35 @@
+# Allow only application inputs. Build from code/MBTA-Tracker, never repo root.
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!next.config.mjs
+!jsconfig.json
+!app/
+!app/**
+!lib/
+!lib/**
+!server/
+!server/**
+!public/
+!public/**
+!docker/
+!docker/proxy.Dockerfile
+!docker/nginx.conf
+# Defense in depth: never include local secrets or generated directories.
+**/.env*
+**/*.pem
+**/*.key
+**/.npmrc
+**/.git
+**/.git/**
+**/node_modules
+**/node_modules/**
+**/.next
+**/.next/**
+**/.aws
+**/.aws/**
+**/.codex
+**/.codex/**
+**/.agents
+**/.agents/**

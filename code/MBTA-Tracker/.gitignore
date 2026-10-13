@@ -37,6 +37,7 @@ yarn-error.log*
 # local-only project files
 /lib/*
 !/lib/b-journey.mjs
+!/lib/b-trains.mjs
 /README.local.md
 
 # vercel
