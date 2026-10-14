@@ -35,12 +35,13 @@ async function getVehicles(params = {}) {
 }
 
 /**
- * Fetch prediction data from MBTA V3.
+ * Fetch prediction data from MBTA V3. Pass { fresh: true } as the second argument
+ * for live journey reads; existing callers retain the default cache policy.
  *
  * @param {{ route?: string|string[], stop?: string, trip?: string, direction_id?: string|number, include?: string }} [params]
  * @returns {Promise<object>} Original MBTA JSON:API response.
  */
-async function getPredictions(params = {}) {
+async function getPredictions(params = {}, { fresh = false } = {}) {
   requireAtLeastOneFilter(params, ["route", "stop", "trip"]);
 
   const query = buildMbtaQuery(params, {
@@ -48,16 +49,17 @@ async function getPredictions(params = {}) {
     passthrough: ["include"],
   });
 
-  return fetchMbtaJson("/predictions", query, CACHE_SECONDS.predictions);
+  return fetchMbtaJson("/predictions", query, CACHE_SECONDS.predictions, fresh);
 }
 
 /**
  * Fetch active Green Line alert data from MBTA V3.
+ * Pass { fresh: true } as the second argument to bypass the default cache.
  *
  * @param {{ route?: string|string[], stop?: string, datetime?: string, direction_id?: string|number }} [params]
  * @returns {Promise<object>} Original MBTA JSON:API response.
  */
-async function getAlerts(params = {}) {
+async function getAlerts(params = {}, { fresh = false } = {}) {
   const query = buildMbtaQuery(
     {
       ...params,
@@ -69,7 +71,7 @@ async function getAlerts(params = {}) {
     },
   );
 
-  return fetchMbtaJson("/alerts", query, CACHE_SECONDS.alerts);
+  return fetchMbtaJson("/alerts", query, CACHE_SECONDS.alerts, fresh);
 }
 
 /**
@@ -159,7 +161,7 @@ function requireAtLeastOneFilter(params, filters) {
   }
 }
 
-async function fetchMbtaJson(path, query, revalidate) {
+async function fetchMbtaJson(path, query, revalidate, fresh = false) {
   const url = buildMbtaUrl(path, query);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -167,14 +169,17 @@ async function fetchMbtaJson(path, query, revalidate) {
   try {
     const response = await fetch(url, {
       headers: buildMbtaHeaders(),
-      next: { revalidate },
+      // Live journey reads must fail visibly instead of retaining stale cached data.
+      ...(fresh ? { cache: "no-store" } : { next: { revalidate } }),
       signal: controller.signal,
     });
 
     const payload = await parseJsonResponse(response);
 
     if (!response.ok) {
-      throw new MbtaApiError(getMbtaErrorMessage(response.status, payload), mapMbtaStatus(response.status));
+      const error = new MbtaApiError(getMbtaErrorMessage(response.status, payload), mapMbtaStatus(response.status));
+      if (response.status === 429) error.retryAfter = response.headers.get("Retry-After");
+      throw error;
     }
 
     return payload;

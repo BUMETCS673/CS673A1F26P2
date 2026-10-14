@@ -1,0 +1,21 @@
+name: mbta-lab2
+services:
+  web:
+    image: mbta-tracker:lab2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    expose:
+      - "3000"
+  proxy:
+    image: mbta-proxy:lab2
+    build:
+      context: .
+      dockerfile: docker/proxy.Dockerfile
+    depends_on:
+      web:
+        condition: service_healthy
+        restart: true
+    ports:
+      - "127.0.0.1:8080:8080"
