@@ -1,3 +1,28 @@
+/*
+ * Description:
+ * Provides the server-side client for requesting and validating data from the
+ * MBTA V3 API. It builds query strings, applies caching and timeout policies,
+ * supplies authentication when configured, and translates upstream failures into
+ * application-friendly errors.
+ *
+ * getPredictions():
+ * Retrieves arrival and departure predictions using route, stop, or trip filters.
+ *
+ * getVehicles():
+ * Retrieves current Green Line vehicle data and optional trip relationships.
+ *
+ * getAlerts():
+ * Retrieves active service alerts, defaulting to the current time.
+ *
+ * getSchedules():
+ * Retrieves planned schedules with filtering and pagination support.
+ *
+ * fetchMbtaJson():
+ * Performs the HTTP request and handles timeouts, invalid responses, and errors.
+ *
+ * getBNetwork():
+ * Builds ordered Green Line B stop patterns from canonical MBTA route data.
+ */
 const MBTA_API_BASE_URL = "https://api-v3.mbta.com";
 const GREEN_LINE_ROUTE_IDS = ["Green-B", "Green-C", "Green-D", "Green-E"];
 const DEFAULT_GREEN_LINE_ROUTES = GREEN_LINE_ROUTE_IDS.join(",");

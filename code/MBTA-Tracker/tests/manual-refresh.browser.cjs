@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Check manual-refresh UI behavior using browser fixtures and controlled clocks.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 const fs = require("node:fs"),
   assert = require("node:assert/strict");
 

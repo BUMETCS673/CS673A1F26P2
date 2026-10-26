@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Build an interactive subway map with Green B journeys between Government Center and Boston College.
+ * AI Contribution: (~90%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";

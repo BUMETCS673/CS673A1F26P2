@@ -1,7 +1,16 @@
-// Four process-local entries: topology, B predictions, alerts, and vehicles.
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Share live-data and timetable requests with separate freshness limits and rate-limit backoff.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
+// Five process-local entries: topology, predictions, alerts, vehicles, schedules.
 // Expired data is never silently returned after an upstream failure.
 export function createSharedMbtaCache(loaders, now = Date.now) {
-  const ttl = { network: 3600000, predictions: 30000, alerts: 60000, vehicles: 30000 };
+  const ttl = { network: 3600000, predictions: 30000, alerts: 60000, vehicles: 30000, schedules: 300000 };
   const entries = new Map(Object.keys(ttl).map((key) => [key, { failures: 0 }]));
   let rateLimitUntil = 0;
 

@@ -1,3 +1,19 @@
+/*
+ * Description:
+ * Defines the API route for retrieving live MBTA arrival and departure predictions.
+ * It accepts supported query parameters, validates user input, and returns either
+ * the upstream prediction data or a consistent JSON error response.
+ *
+ * GET():
+ * Reads and validates the request parameters, calls the shared MBTA prediction
+ * client, and sends the resulting data to the caller.
+ *
+ * readParams():
+ * Collects supported query values and rejects unsupported parameters.
+ *
+ * validateDirectionId():
+ * Ensures that the optional direction identifier is either zero or one.
+ */
 import { NextResponse } from "next/server";
 import { MbtaApiError, getPredictions } from "@/server/mbta-api";
 

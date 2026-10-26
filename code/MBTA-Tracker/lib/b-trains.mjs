@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Match same-trip predictions and distinguish recent from historical vehicle observations with bounded offline countdowns without inventing departure times.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 // Pure JSON:API transforms: no network or React, so edge cases are easy to test.
 const unavailable = new Set(["CANCELED", "CANCELLED", "SKIPPED", "NO_DATA"]);
 const relation = (item, name) => item.relationships?.[name]?.data?.id;
@@ -109,7 +118,7 @@ export function journeyTrains(document, journey, now = Date.now()) {
 }
 
 // Presence is an observation, never a departure estimate or boarding promise.
-export function journeyVehicles(document, journey, now = Date.now()) {
+export function journeyVehicles(document, journey, now = Date.now(), includeLastKnown = false) {
   const trips = new Map(
     (document.included ?? [])
       .filter((item) => item.type === "trip")
@@ -128,7 +137,7 @@ export function journeyVehicles(document, journey, now = Date.now()) {
         (trip?.direction_id == null || trip.direction_id === journey.direction) &&
         atStop(item, journey.stops[0]) &&
         Number.isFinite(updated) &&
-        now - updated <= 90000 &&
+        (includeLastKnown || now - updated <= 90000) &&
         updated <= now + 30000
       );
     })
@@ -138,4 +147,16 @@ export function journeyVehicles(document, journey, now = Date.now()) {
       headsign: trips.get(relation(item, "trip"))?.headsign || "Headsign unavailable",
     }))
     .slice(0, 3);
+}
+
+// Offline countdowns derive from absolute saved timestamps, never accumulated ticks.
+export function estimateMinutes(time, now = Date.now()) {
+  const value = timestamp(time);
+  return Number.isFinite(value) ? Math.max(0, Math.ceil((value - now) / 60000)) : null;
+}
+
+export function offlineJourneyTrains(document, journey, checkedAt, now = Date.now()) {
+  if (!Number.isFinite(checkedAt) || now < checkedAt || now - checkedAt > 15 * 60000) return [];
+  // Keep a passed estimate briefly for context, without asserting train movement.
+  return journeyTrains(document, journey, Math.max(checkedAt, now - 2 * 60000));
 }

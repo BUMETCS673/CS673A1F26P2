@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Combine Green B journey predictions and alerts while reporting their failures independently.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import { NextResponse } from "next/server";
 import { MbtaApiError } from "@/server/mbta-api";
 import {

@@ -1,3 +1,13 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Set the page title and description for the Green B journey planner.
+ * AI Contribution: (~90%)
+ * Scope: AI-assisted page title and description changes only; excludes the existing layout and scaffold.
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
