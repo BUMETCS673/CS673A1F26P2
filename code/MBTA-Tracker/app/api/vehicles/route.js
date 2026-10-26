@@ -1,3 +1,19 @@
+/*
+ * Description:
+ * Defines the API route for retrieving current MBTA vehicle information. It
+ * limits requests to the supported route, direction, and relationship parameters,
+ * then returns upstream data through a consistent JSON interface.
+ *
+ * GET():
+ * Reads the request parameters, validates the direction, calls the shared MBTA
+ * vehicle client, and converts failures into JSON error responses.
+ *
+ * readParams():
+ * Collects supported values and rejects any unexpected query parameter.
+ *
+ * validateDirectionId():
+ * Ensures that the optional direction identifier is either zero or one.
+ */
 import { NextResponse } from "next/server";
 import { MbtaApiError, getVehicles } from "@/server/mbta-api";
 
