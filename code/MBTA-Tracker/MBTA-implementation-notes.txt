@@ -1,4 +1,20 @@
+Offline countdown extension: stale prediction cards use one shared wall clock against saved absolute departure times. They show approximate minutes, last successful check, and unavailable live updates. At zero they say estimate passed, never confirm departure. Retention ends at 15 minutes since the last successful prediction check or two minutes past saved departure, whichever comes first. Successful empty/cancelled data replaces old estimates. Scheduled times stay labeled Scheduled; vehicle observations never acquire invented ETAs. Visibility return resynchronizes the shared clock.
+
 MBTA technical notes for Bill's review
+
+Automatic updates, replacing the earlier manual-only behavior
+
+The visible planner now refreshes one shared snapshot every 30 seconds after the preceding request completes. It pauses while the tab is hidden, checks again on return, shares in-flight requests with manual Refresh, and respects server Retry-After/backoff. Timetable data retains its separate five-minute server cache. The old manual-only notes below describe the preceding implementation.
+
+Failed resources keep their last successful contents and original check times. Future last-known predictions remain as explicitly stale cards without a live countdown; departed predictions are removed. Historical vehicle observations remain labeled as historical with the original report time and no boarding/departure promise. Successful empty responses clear old observations. Scheduled times remain labeled Scheduled, with their last timetable-check time. Separate warnings expose prediction, timetable and vehicle failures.
+
+Scheduled-departure fallback
+
+When a fresh prediction response has no usable departures for the selected journey, the planner can show official MBTA timetable departures, labeled Scheduled. Scheduled arrivals and ride durations remain timetable values, not live estimates. One trip must serve the origin before the destination on the same Boston service date, with pickup and drop-off permitted. Existing live cancellations or skipped endpoints take precedence. Errors and stale live data remain visible instead of being replaced by a timetable.
+
+The shared timetable refreshes only on explicit refresh after a five-minute cache interval. It covers departures in a saved two-hour window and fetches one extra hour for destination matching, using MBTA's 3 AM service-day boundary. Reversals use the same saved branch-wide data. Missing matching schedules do not prove service has stopped.
+
+Future idea from Bill, not implemented: explain asymmetric, short-turn or fragmented service more clearly. One direction may cover the full branch while the return journey starts or ends partway along it. A richer display should identify the supported segment and any missing connection without inventing a through train or transfer. Current timetable matching rejects journeys without a single qualifying trip between both selected stops.
 
 Moved out of README at Bill's request. These are implementation and verification notes for review, not proposed team README wording.
 

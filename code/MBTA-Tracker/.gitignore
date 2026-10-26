@@ -38,6 +38,7 @@ yarn-error.log*
 /lib/*
 !/lib/b-journey.mjs
 !/lib/b-trains.mjs
+!/lib/b-schedules.mjs
 /README.local.md
 
 # vercel

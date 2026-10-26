@@ -2,7 +2,7 @@
  * AI-ASSISTED
  * Tool: OpenAI Codex
  * Model: Exact model not recorded
- * Prompt Summary: Build the Green Line B journey planner with origin/destination selection, arrivals, ETA, alerts and manual refresh.
+ * Prompt Summary: Keep Green B journeys updated automatically, with labeled schedules and bounded approximate countdowns during outages.
  * AI Contribution: (~90%)
  * Estimate basis: Owner assessment, not measured code authorship.
  */
@@ -11,7 +11,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { journeyTrains, journeyVehicles } from "@/lib/b-trains.mjs";
+import { journeyTrains, journeyVehicles, offlineJourneyTrains, estimateMinutes } from "@/lib/b-trains.mjs";
+import { scheduledFallback } from "@/lib/b-schedules.mjs";
 import { journeyAlerts } from "@/lib/b-journey.mjs";
 import { createSnapshotClient } from "./components/b-snapshot-client.mjs";
 import { findJourney } from "@/lib/b-journey.mjs";
@@ -34,8 +35,14 @@ function useSnapshot() {
   const [state, setState] = useState(client.getState);
   useEffect(() => {
     const unsubscribe = client.subscribe(setState);
-    client.load();
-    return unsubscribe;
+    const stop = client.startAutoRefresh({
+      isVisible: () => !document.hidden,
+      subscribeVisibility: (listener) => {
+        document.addEventListener("visibilitychange", listener);
+        return () => document.removeEventListener("visibilitychange", listener);
+      },
+    });
+    return () => { stop(); unsubscribe(); };
   }, [client]);
   return { ...state, refresh: () => client.load(true) };
 }
@@ -63,9 +70,10 @@ function JourneyResults({ journey, snapshot }) {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-
-    return () => clearInterval(timer);
+    const tick = () => setNow(Date.now());
+    const timer = setInterval(tick, 1000);
+    document.addEventListener("visibilitychange", tick);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", tick); };
   }, []);
 
   const predictionsChecked =
@@ -74,20 +82,25 @@ function JourneyResults({ journey, snapshot }) {
     result.data?.alertsCheckedAt ?? result.data?.checkedAt ?? result.checked;
   const stale = predictionsChecked && now - predictionsChecked > 90000;
   const alertsStale = alertsChecked && now - alertsChecked > 90000;
-  const retrying = result.data?.retryAt > now;
+  const retryAt = Math.max(result.retryAt ?? 0, result.data?.retryAt ?? 0);
+  const retrying = retryAt > now;
+  const predictionsOld = Boolean(stale || result.error || result.data?.predictionsError);
 
-  const trains =
-    stale || result.error || result.data?.predictionsError
-      ? []
-      : journeyTrains(snapshot.data?.predictions ?? { data: [] }, journey, now);
+  const predictions = snapshot.data?.predictions ?? { data: [] };
+  const trains = predictionsOld
+    ? offlineJourneyTrains(predictions, journey, predictionsChecked, now)
+    : journeyTrains(predictions, journey, now);
 
   const alerts = result.data?.alerts ?? [];
-  const vehicles =
-    !result.error &&
-    !result.data?.vehiclesError &&
-    now - (result.data?.vehiclesCheckedAt ?? 0) <= 90000
-      ? journeyVehicles(snapshot.data?.vehicles ?? { data: [] }, journey, now)
-      : [];
+  const scheduled = scheduledFallback(snapshot.data, journey, trains, now, true);
+  const departures = trains.length ? trains : scheduled;
+  const isScheduled = trains.length === 0 && scheduled.length > 0;
+  const schedulesStale = now - (result.data?.schedulesCheckedAt ?? 0) > 300000;
+  const cardsOld = isScheduled
+    ? Boolean(schedulesStale || result.error || result.data?.schedulesError)
+    : predictionsOld;
+  const vehicles = journeyVehicles(snapshot.data?.vehicles ?? { data: [] }, journey, now, true);
+  const vehicleDataOld = result.error || result.data?.vehiclesError || now - (result.data?.vehiclesCheckedAt ?? 0) > 90000;
 
   return (
     <>
@@ -110,35 +123,37 @@ function JourneyResults({ journey, snapshot }) {
           </button>
         </div>
         <p className={styles.small}>From {journey.stops[0].name}</p>
+        <p className={styles.small}>{result.busy ? "Updating MBTA data…" : retrying
+          ? `Updates paused until ${clockTime(retryAt)} ET; retrying automatically while this tab is visible.`
+          : "Updates automatically every 30 seconds while this tab is visible."}</p>
         {result.notice && (
           <p role="status" className={styles.small}>
             {result.notice}
           </p>
         )}
         <div aria-live="polite">
-          {result.error ? (
+          {(result.error || result.data?.predictionsError || stale) && (
             <p role="alert" className={styles.notice}>
-              {result.error} Use Refresh to try again.
+              {result.error || result.data?.predictionsError || "Live predictions are out of date."}{" "}
+              {predictionsChecked ? `Last successful prediction check: ${clockTime(predictionsChecked)} ET. Saved times are not current live estimates.` : "Live predictions are unavailable."}
             </p>
-          ) : !result.data ? (
-            <p className={styles.empty}>Checking MBTA predictions…</p>
-          ) : result.data.predictionsError ? (
-            <p role="alert" className={styles.notice}>
-              {result.data.predictionsError}
-              {retrying &&
-                ` Refresh available after ${clockTime(result.data.retryAt)} ET.`}
-            </p>
-          ) : stale ? (
-            <p className={styles.notice}>
-              Predictions are out of date. Refresh before travelling.
-            </p>
-          ) : trains.length === 0 ? (
+          )}
+          {!result.data ? (
+            <p className={styles.empty}>Checking MBTA predictions.</p>
+          ) : departures.length === 0 ? (
             <div className={styles.empty}>
               <strong>No timed departure predictions in saved data</strong>
               <p>
                 This B-branch route exists, but the saved MBTA data has no timed
                 departures from {journey.stops[0].name} in this direction. Refresh to
                 check again; this does not confirm that service has stopped.
+              </p>
+              <p>
+                {result.data.schedulesError
+                  ? "Scheduled departures could not be loaded. Use Refresh to try again."
+                  : !result.data.schedules || schedulesStale
+                    ? "Refresh to check scheduled departures."
+                    : "No matching scheduled departures in the saved two-hour window. This does not confirm that service has stopped."}
               </p>
               <a
                 href="https://www.mbta.com/schedules/Green-B/line"
@@ -149,25 +164,29 @@ function JourneyResults({ journey, snapshot }) {
               </a>
             </div>
           ) : (
-            trains.map((train, index) => (
+            <>
+            {isScheduled && <p className={styles.small}>{predictionsOld ? "Live departure predictions could not be updated." : "No live departure predictions for this journey."} Times below are scheduled, not live. Check service alerts before travelling.</p>}
+            {isScheduled && (result.data.schedulesError || schedulesStale) && <p role="alert" className={styles.notice}>Timetable could not be updated. Showing the last saved schedule checked {clockTime(result.data.schedulesCheckedAt)} ET.</p>}
+            {departures.map((train, index) => (
               <article className={styles.trainCard} key={train.id}>
                 <div className={styles.trainTop}>
                   <span className={styles.trainLabel}>
-                    {index === 0 ? "NEXT TRAIN" : "FOLLOWING TRAIN"}
+                    {isScheduled ? "SCHEDULED TRAIN" : index === 0 ? "NEXT TRAIN" : "FOLLOWING TRAIN"}
                   </span>
-                  <span className={styles.liveLabel}>MBTA prediction</span>
+                  <span className={styles.liveLabel}>{isScheduled ? "Scheduled · MBTA timetable" : cardsOld ? "Stale · approximate estimate" : "MBTA prediction"}</span>
                 </div>
                 <div className={styles.trainDeparture}>
                   <strong>
-                    {minutesUntil(train.departure, now)}
+                    {cardsOld && !isScheduled ? `~${estimateMinutes(train.departure, now)}` : minutesUntil(train.departure, now)}
                     <small> min</small>
                   </strong>
                   <span>
                     Toward {train.headsign}
-                    <small>Departs {clockTime(train.departure)} ET</small>
+                    <small>{isScheduled ? "Scheduled departure" : cardsOld ? "Last predicted departure" : "Departs"} {clockTime(train.departure)} ET</small>
                   </span>
                 </div>
-                {train.originArrival && (
+                {cardsOld && !isScheduled && <p className={styles.small}>Based on last update at {clockTime(predictionsChecked)} ET; live updates unavailable. {Date.parse(train.departure) <= now ? "Estimate passed — awaiting update; departure is not confirmed." : "Approximate remaining time, not current tracking."}</p>}
+                {train.originArrival && !cardsOld && (
                   <p className={styles.small}>
                     At your stop:{" "}
                     {Date.parse(train.originArrival) <= now
@@ -177,11 +196,11 @@ function JourneyResults({ journey, snapshot }) {
                   </p>
                 )}
                 <div className={styles.destinationEstimate}>
-                  {train.destinationStatus === "predicted" ? (
+                  {train.destinationStatus === "predicted" || isScheduled ? (
                     <>
-                      <span>Arrive at destination</span>
+                      <span>{isScheduled ? "Scheduled arrival" : cardsOld ? "Last predicted arrival" : "Arrive at destination"}</span>
                       <strong>~{clockTime(train.destinationArrival)} ET</strong>
-                      <small>Same train · ~{train.rideMinutes} min on board</small>
+                      <small>{isScheduled ? "Scheduled ride" : "Same train"} · ~{train.rideMinutes} min on board</small>
                     </>
                   ) : (
                     <>
@@ -199,7 +218,9 @@ function JourneyResults({ journey, snapshot }) {
                   )}
                 </div>
               </article>
-            ))
+            ))}
+            {isScheduled && <p className={styles.timestamp}>Timetable checked {clockTime(result.data.schedulesCheckedAt)} ET. Scheduled times do not confirm actual train movement.</p>}
+            </>
           )}
         </div>
         {trains.length === 0 &&
@@ -209,24 +230,24 @@ function JourneyResults({ journey, snapshot }) {
               className={styles.notice}
               data-testid="observed-vehicle"
             >
-              <strong>Vehicle reported at {journey.stops[0].name}</strong>
+              <strong>{vehicleDataOld || now - Date.parse(vehicle.updatedAt) > 90000 ? "Last known vehicle observation at" : "Vehicle reported at"} {journey.stops[0].name}</strong>
               <p>
                 Headsign: {vehicle.headsign}. Last reported{" "}
                 {clockTime(vehicle.updatedAt)} ET.
               </p>
-              <p>No departure time supplied. Boarding is not confirmed.</p>
+              <p>{vehicleDataOld || now - Date.parse(vehicle.updatedAt) > 90000 ? "Historical observation; current position is unknown. " : ""}No departure time supplied. Boarding is not confirmed.</p>
             </div>
           ))}
         {trains.length === 0 && result.data?.vehiclesError && (
           <p className={styles.small}>Vehicle positions could not be checked.</p>
         )}
-        {predictionsChecked && !result.data?.predictionsError && (
+        {predictionsChecked && (
           <p className={styles.timestamp}>
             Checked {clockTime(predictionsChecked)} ET · Refresh to update MBTA data.
           </p>
         )}
         <p className={styles.small}>
-          Countdowns use saved prediction times. Refresh for new MBTA data. Times are
+          Offline estimates stop after 15 minutes without a successful prediction check, or two minutes after the saved departure time. Refresh can request an earlier update, subject to cooldowns. Times are
           estimates, not guarantees.
         </p>
       </section>
@@ -246,11 +267,11 @@ function JourneyResults({ journey, snapshot }) {
         ) : result.data.alertsError ? (
           <p role="alert" className={styles.notice}>
             {result.data.alertsError}
-            {retrying && ` Next retry after ${clockTime(result.data.retryAt)} ET.`}
+            {retrying && ` Next retry after ${clockTime(retryAt)} ET.`}
           </p>
         ) : alertsStale ? (
           <p className={styles.notice}>
-            Alert information is out of date. Refresh to check service.
+            Alert information is out of date. Automatic updates will retry; check service before travelling.
           </p>
         ) : alerts.length === 0 ? (
           <p className={styles.allClear}>
