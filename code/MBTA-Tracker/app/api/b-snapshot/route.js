@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Expose shared Green B topology, predictions, alerts and vehicle snapshots with freshness metadata.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import {
   getSharedBNetwork,
   getBPredictionsSnapshot,

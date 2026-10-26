@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Test shared requests, cache expiry, rate-limit pauses and failure backoff.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createSharedMbtaCache } from "../server/shared-mbta-cache.mjs";

@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Test fresh journey requests while preserving the existing API wrapper cache defaults.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";

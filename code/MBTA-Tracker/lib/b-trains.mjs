@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Match same-trip predictions and recent vehicle observations without inventing departure times or destination ETAs.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 // Pure JSON:API transforms: no network or React, so edge cases are easy to test.
 const unavailable = new Set(["CANCELED", "CANCELLED", "SKIPPED", "NO_DATA"]);
 const relation = (item, name) => item.relationships?.[name]?.data?.id;

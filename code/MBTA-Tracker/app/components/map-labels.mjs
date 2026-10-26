@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Place horizontal station labels with collision handling and leader lines.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 // All labels share horizontal typography and the same collision rules.
 // Width estimates deliberately exceed Arial's typical advance at 12px, including
 // bold endpoint prefixes. Browser regression tests verify actual rendered bounds.

@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Build the Green Line B journey planner with origin/destination selection, arrivals, ETA, alerts and manual refresh.
+ * AI Contribution: (~90%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 "use client";
 
 import { useEffect, useState } from "react";

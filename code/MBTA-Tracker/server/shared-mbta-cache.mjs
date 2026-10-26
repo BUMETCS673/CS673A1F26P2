@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Share upstream requests and enforce cache freshness, cooldowns and rate-limit backoff.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 // Four process-local entries: topology, B predictions, alerts, and vehicles.
 // Expired data is never silently returned after an upstream failure.
 export function createSharedMbtaCache(loaders, now = Date.now) {

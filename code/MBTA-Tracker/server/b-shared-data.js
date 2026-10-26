@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Connect the existing MBTA API wrapper to shared Green B data caches.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import { getBNetwork, getPredictions, getAlerts, getVehicles } from "./mbta-api";
 import { createSharedMbtaCache } from "./shared-mbta-cache.mjs";
 

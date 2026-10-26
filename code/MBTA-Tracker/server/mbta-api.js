@@ -1,3 +1,13 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Allow fresh prediction/alert reads and propagate Retry-After for rate-limit handling.
+ * AI Contribution: (~90%)
+ * Scope: AI-assisted fresh-read and Retry-After changes only; excludes the existing teammate API wrapper.
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 const MBTA_API_BASE_URL = "https://api-v3.mbta.com";
 const GREEN_LINE_ROUTE_IDS = ["Green-B", "Green-C", "Green-D", "Green-E"];
 const DEFAULT_GREEN_LINE_ROUTES = GREEN_LINE_ROUTE_IDS.join(",");

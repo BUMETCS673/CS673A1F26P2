@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Style the subway map, toolbar, station labels and responsive map controls.
+ * AI Contribution: (~90%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 .panel {
   min-width: 0;
   background: #f4f7f6;

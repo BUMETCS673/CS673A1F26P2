@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Test same-trip prediction matching, invalid predictions and vehicle observations.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 import test from "node:test";
 import assert from "node:assert/strict";
 import { journeyTrains, journeyVehicles } from "../lib/b-trains.mjs";

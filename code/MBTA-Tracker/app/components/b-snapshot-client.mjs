@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Coordinate manual snapshot refreshes, request sharing, cooldowns and retry notices.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 export function createSnapshotClient(fetchSnapshot, now = Date.now) {
   let state = { data: null, error: "", busy: false, notice: "", retryAt: 0 };
   let pending;

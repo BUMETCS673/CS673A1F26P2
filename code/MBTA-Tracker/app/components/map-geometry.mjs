@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Define schematic station coordinates, route paths and journey fitting for the subway map.
+ * AI Contribution: (~100%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 // Presentation coordinates only: connections and station names come from MBTA.
 // Edit the anchors/branch bends here without changing the network topology.
 export function subwayLayout(network) {
