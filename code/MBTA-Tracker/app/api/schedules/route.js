@@ -1,3 +1,19 @@
+/*
+ * Description:
+ * Defines the API route for retrieving planned MBTA schedule information. It
+ * accepts route, stop, trip, date, time, direction, and pagination options while
+ * protecting the upstream service from malformed or unsupported query parameters.
+ *
+ * GET():
+ * Validates the incoming request, retrieves matching schedule records through the
+ * shared MBTA client, and returns a JSON response.
+ *
+ * readParams():
+ * Normalizes supported query values and rejects unknown parameters.
+ *
+ * validateIntegerParam():
+ * Confirms that sequence and pagination values satisfy their required minimums.
+ */
 import { NextResponse } from "next/server";
 import { MbtaApiError, getSchedules } from "@/server/mbta-api";
 

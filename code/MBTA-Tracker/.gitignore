@@ -40,6 +40,10 @@ yarn-error.log*
 !/lib/b-trains.mjs
 /README.local.md
 
+# if you use some Agentic AI please remember to add their .md file to .gitignore
+/AGENTS.md
+/CLAUDE.md
+
 # vercel
 .vercel
 
