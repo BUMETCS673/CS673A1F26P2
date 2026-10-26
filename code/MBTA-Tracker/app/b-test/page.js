@@ -1,3 +1,12 @@
+/*
+ * AI-ASSISTED
+ * Tool: ChatGPT
+ * Model: GPT-6 Astra
+ * Prompt Summary: Create a simple test page without that use API helper function to show B-branch route stations, be able to choose starting and destination station, and show prediciton and alert.
+ * AI Contribution: (~80%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
 "use client";
 
 import { useEffect, useState } from "react";
