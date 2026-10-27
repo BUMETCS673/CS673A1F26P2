@@ -1,0 +1,94 @@
+Offline countdown extension: stale prediction cards use one shared wall clock against saved absolute departure times. They show approximate minutes, last successful check, and unavailable live updates. At zero they say estimate passed, never confirm departure. Retention ends at 15 minutes since the last successful prediction check or two minutes past saved departure, whichever comes first. Successful empty/cancelled data replaces old estimates. Scheduled times stay labeled Scheduled; vehicle observations never acquire invented ETAs. Visibility return resynchronizes the shared clock.
+
+MBTA technical notes for Bill's review
+
+Automatic updates, replacing the earlier manual-only behavior
+
+The visible planner now refreshes one shared snapshot every 30 seconds after the preceding request completes. It pauses while the tab is hidden, checks again on return, shares in-flight requests with manual Refresh, and respects server Retry-After/backoff. Timetable data retains its separate five-minute server cache. The old manual-only notes below describe the preceding implementation.
+
+Failed resources keep their last successful contents and original check times. Future last-known predictions remain as explicitly stale cards without a live countdown; departed predictions are removed. Historical vehicle observations remain labeled as historical with the original report time and no boarding/departure promise. Successful empty responses clear old observations. Scheduled times remain labeled Scheduled, with their last timetable-check time. Separate warnings expose prediction, timetable and vehicle failures.
+
+Scheduled-departure fallback
+
+When a fresh prediction response has no usable departures for the selected journey, the planner can show official MBTA timetable departures, labeled Scheduled. Scheduled arrivals and ride durations remain timetable values, not live estimates. One trip must serve the origin before the destination on the same Boston service date, with pickup and drop-off permitted. Existing live cancellations or skipped endpoints take precedence. Errors and stale live data remain visible instead of being replaced by a timetable.
+
+The shared timetable refreshes only on explicit refresh after a five-minute cache interval. It covers departures in a saved two-hour window and fetches one extra hour for destination matching, using MBTA's 3 AM service-day boundary. Reversals use the same saved branch-wide data. Missing matching schedules do not prove service has stopped.
+
+Future idea from Bill, not implemented: explain asymmetric, short-turn or fragmented service more clearly. One direction may cover the full branch while the return journey starts or ends partway along it. A richer display should identify the supported segment and any missing connection without inventing a through train or transfer. Current timetable matching rejects journeys without a single qualifying trip between both selected stops.
+
+Moved out of README at Bill's request. These are implementation and verification notes for review, not proposed team README wording.
+
+Boston subway map and B-branch planner
+
+The homepage shows the full subway network, including Mattapan and Silver Line services, as schematic context. Journey planning is limited to the Green B branch: Boston College to Government Center in both directions. It preserves the team's Next.js/React stack and existing API test pages.
+
+Run and check
+
+From code/MBTA-Tracker, with the existing dependencies installed:
+
+npm run dev -- --hostname 127.0.0.1 --port 3187
+npm run lint
+node --test tests/b-journey.test.mjs tests/b-trains.test.mjs tests/mbta-freshness.test.mjs tests/map-geometry.test.mjs tests/map-labels.test.mjs
+npm run build
+
+Open http://127.0.0.1:3187. Choose another free port if needed. The existing /b-test and /counter-for-testing pages are unchanged. No new dependencies are required.
+
+Where to make changes
+
+- app/page.js: homepage, B-only selectors and refresh logic.
+- app/components/SubwayMap.js and its CSS module: SVG network, smooth journey fitting, full-map reset, wheel zoom and pointer pan. Only B stops are interactive. Enter/Space picks a B stop; with the map itself focused, arrows pan, +/− zoom and 0 resets.
+- app/components/map-geometry.mjs: editable schematic coordinates, separate from official connectivity.
+- app/components/map-labels.mjs: shared horizontal label placement with measured text widths, collision-aware offsets and leader lines. Endpoints and intermediate stops follow the same rules.
+- tests/map-labels.browser.cjs: rendered regression checks for the BU Central/Blandford overlap and 20 overview/journey/zoom scenarios. Requires an already-running isolated Chrome CDP browser on 9333 and preview on 3187; run node tests/map-labels.browser.cjs. Uses browser-only fixtures and writes evidence under .next/label-qa (or MBTA_QA_OUTPUT).
+- app/data/subway-network.json: official route patterns and parent-station IDs. Refresh intentionally with node scripts/update-subway-network.mjs; review topology/geometry tests after updating. This static context does not represent temporary diversions.
+- app/page.module.css: homepage colors, typography, sidebar and responsive layout.
+- app/api/b-journey/route.js: combines predictions and active journey alerts, using the team's existing server wrapper. Example: /api/b-journey?origin=place-bucen&destination=place-gover.
+- lib/b-trains.mjs: pure same-trip matching and prediction validation.
+- tests/b-trains.test.mjs: synthetic edge cases; tests/b-journey.test.mjs retains the team's journey/alert tests.
+
+The pre-existing wrappers remain available at /api/vehicles, /api/predictions, /api/alerts, /api/schedules and /api/b-stops. Teammate examples such as /api/predictions?route=Green-B&stop=place-bucen&include=stop,trip,vehicle use the selected local port. The homepage does not need vehicle polling.
+
+Data rules and limits
+
+- The full network uses MBTA rail canonical patterns and typical Silver Line patterns. Parent-station IDs establish shared nodes; nearby bus stops are not falsely merged by name. The live B planner still uses its 23-stop canonical route. Other lines have no journey or prediction controls. Station additions remain selectable in the planner even if their drawing coordinates need updating.
+- Initial load fetches a full B-line snapshot. Only explicit Refresh can request more data; swaps, station selection, focus changes and elapsed time use saved data. Predictions and vehicle observations have a 30-second cooldown, alerts 60 seconds and topology one hour. Repeated requests share in-flight work and preserve original fetch times. Existing standalone wrappers keep their original cache defaults.
+- A boardable origin prediction needs a future departure; a null departure denotes a trip's last stop. Canceled (both spellings), skipped, non-revenue, and NO_DATA origin predictions are excluded.
+- Destination arrival requires the same trip ID, correct route/direction/platform, a later stop sequence, and a valid arrival after departure. Vehicle IDs are not sufficient because vehicles can serve multiple future trips.
+- Missing destination predictions are explicitly unavailable; skipped/canceled destination stops are labeled not served. These trains are not advertised as confirmed through journeys. No schedule fallback or invented travel-time estimate is used.
+- MBTA light-rail uncertainty differs from bus uncertainty; the code does not incorrectly discard a light-rail prediction just because its uncertainty is 360 seconds.
+- Displayed clock times use America/New_York. Departure countdowns use the browser clock. Predictions are estimates, not guarantees.
+- Prediction and alert failures are independent. A failed alert request never becomes an “all clear.”
+- Native select controls and keyboard-accessible B station targets support both directions. The map pans and zooms on narrow screens; its shortcut jumps to the planner. Camera animations respect reduced motion.
+
+Official contracts: MBTA V3 documentation (https://api-v3.mbta.com/docs/swagger/index.html), Green-B canonical patterns (https://api-v3.mbta.com/route_patterns?filter%5Broute%5D=Green-B&include=representative_trip.stops,representative_trip.stops.parent_station), B-branch service information (https://www.mbta.com/schedules/Green-B/line).
+
+Prior live checks verified both B-branch directions, including positive same-trip destination predictions. Synthetic checks cover skipped stops and failures. Browser-only fixtures are not part of the app. The full-network revision was checked at 1440px desktop and 390px mobile widths: B-only station actions, journey fitting/highlighting, reset, pointer/wheel/keyboard navigation, swaps and error states. Browser QA found and fixed an SVG title hydration issue and dense-label layout problems. Public API rate limiting occurred during repeated checks; isolated browser fixtures completed interaction/error coverage, followed by a successful live capture with three train cards. Fixtures are explicitly labeled in their previews.
+
+
+Current verification: 24 unit tests, lint, production build, and all 30 rendered label scenarios passed at 1440px, 390px and 320px. Synthetic swaps in both directions and captured-feed empty states passed at all three widths. Every station label is horizontal; endpoint and intermediate labels share measured-width collision checks and leader lines. BU Central and Blandford Street are explicitly covered. Full-branch Fit journey shows all 23 complete names on desktop and mobile. Interaction and synthetic error/recovery checks passed, followed by a three-train live capture. Corrected Library previews have been refreshed.
+
+Readability scope: formatting is retained only in the new planner/map feature files. Thirteen teammate files are restored byte-for-byte to baseline; existing server and layout formatting is retained with only the required live-cache option and page metadata changes. README and dependencies remain unchanged.
+
+Staged UI correction: swap uses a dedicated grid column beside both selectors with a 44px target; map navigation instructions are screen-reader-only and the explanatory line below the unchanged legend is removed. Empty predictions explicitly preserve the existence of the route. Both terminal directions have synthetic regression coverage. Public live checks at 2026-10-13 21:25 UTC found no Boston College inbound departures in direct-platform or whole-route queries, while outbound predictions were present. This is feed availability, not evidence that service has stopped. The canonical MBTA revenue field is also honored when excluding non-revenue predictions.
+
+The visible student-project sidebar footer was removed as requested. Existing README and official API/source references in this technical note are preserved.
+
+Proposed future iterations — Bill's ideas; not implemented
+
+- Group station dropdowns by line, with line indicators or color icons.
+- Add type-to-search best-match station suggestions that show the relevant line icons.
+- Explore a mobile experience with opt-in location tracking for live journey updates and approaching-destination / get-off reminders.
+- Design location permissions, consent and privacy controls before implementation. Evaluate location accuracy, background operation, connectivity, battery use and notification reliability; decide how reminders communicate uncertainty and avoid implying a guaranteed alert.
+
+Manual-refresh rate-limit correction
+
+- A fixed four-entry process-local server cache shares topology, all B predictions, all B alerts and all B vehicles across selections/users. No selected-stop cache keys accumulate. A shared 429 pause honors Retry-After seconds or HTTP dates, defaults to at least 60 seconds, and prevents request storms. Other failures use 30-second exponential backoff capped at five minutes. Expired snapshots are not silently served after a failed fetch.
+- Countdown ticks use absolute departure timestamps and the current wall clock; they do not fetch new telemetry or change destination ETAs. Departed trains disappear and data older than 90 seconds is explicitly out of date. Original successful fetch timestamps remain visible. Successful empty data, stale data and failed fetches remain distinct.
+- Within cooldown, Refresh says Already up to date. After backoff expires, the user must explicitly Refresh; there is no automatic retry or background/focus polling.
+- Synthetic handler counts: initial journey plus three swaps decreased from 9 upstream calls (1 topology,4 predictions,4 alerts) to 4 (1 topology, 1 predictions, 1 alerts, 1 vehicles). Twenty concurrent refreshes share those four initial calls. An explicit refresh at30 seconds adds predictions+vehicles; at60 seconds adds predictions+alerts+vehicles. Swaps and local ticks add zero.
+- Regression tests: node --test tests/shared-mbta-cache.test.mjs tests/b-snapshot-client.test.mjs. Browser fixture test: node tests/manual-refresh.browser.cjs with a separately started isolated CDP browser on9333. MBTA_QA_URL optionally overrides default3187; MBTA_QA_OUTPUT selects output. Fixtures/fake clocks stay in QA, never production data. Updated map-label browser harness consumes the same snapshot endpoint.
+- This cache is process-local; a multi-instance deployment would need shared coordination for a global upstream quota. No dependency, README, commit or push changes.
+
+Vehicle observation correction
+
+At 2026-10-13 22:03 UTC, the official vehicle feed reported an inbound train STOPPED_AT Boston College platform70106, headsign Government Center, while terminal predictions were empty. Scheduled departures existed separately. This confirms that empty timed predictions do not mean no train is operating. The homepage now shows a recent stopped vehicle at the selected origin when no timed prediction is available, its actual reported timestamp, and an explicit no-departure-time / boarding-unconfirmed notice. Observations expire after90 seconds, respect direction, origin platform and revenue status, and never create destination ETAs. A single full-B vehicle snapshot shares the existing manual-refresh and backoff behavior. Schedules are linked separately and are never represented as live predictions.

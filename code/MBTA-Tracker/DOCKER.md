@@ -1,6 +1,6 @@
 # Frontend Docker deployment
 
-This branch does not yet contain the Next.js application. Merge the app source into this folder before building; the Docker files alone cannot build an image.
+This branch contains the Next.js application required by this Dockerfile.
 
 From the repository root, run these Bash commands with Docker Desktop running in Linux-container mode:
 

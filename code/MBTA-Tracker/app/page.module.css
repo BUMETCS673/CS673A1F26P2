@@ -1,0 +1,375 @@
+/*
+ * AI-ASSISTED
+ * Tool: OpenAI Codex
+ * Model: Exact model not recorded
+ * Prompt Summary: Style the planner sidebar, station selectors, train cards and responsive page layout.
+ * AI Contribution: (~90%)
+ * Estimate basis: Owner assessment, not measured code authorship.
+ */
+
+.page {
+  --ink: #203c2e;
+  --muted: #56675e;
+  --green: #007a3d;
+  color: var(--ink);
+  background: #fff;
+  min-height: 100dvh;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #dbe3df;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 650;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+}
+
+.mbtaLink {
+  color: var(--green);
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 360px;
+  align-items: start;
+}
+
+.sidebar {
+  padding: 24px;
+  border-left: 1px solid #dbe3df;
+  max-height: calc(100dvh - 61px);
+  overflow-y: auto;
+  scroll-margin-top: 16px;
+}
+
+.plannerHeading h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.plannerHeading p {
+  margin: 0 0 22px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 16px 10px;
+}
+
+.fields label {
+  grid-column: 1;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.fields label>span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fields b {
+  display: inline-grid;
+  place-items: center;
+  height: 21px;
+  width: 21px;
+  border-radius: 50%;
+  background: #e4eee8;
+  color: #126637;
+  font-size: 12px;
+}
+
+.fields select {
+  width: 100%;
+  padding: 12px 30px 12px 10px;
+  background: #fff;
+  border: 1px solid #b6c7bd;
+  border-radius: 6px;
+  color: var(--ink);
+  font: inherit;
+}
+
+.activeField select {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green);
+}
+
+.fields select:focus-visible,.page button:focus-visible,.page a:focus-visible {
+  outline: 3px solid #117fba;
+  outline-offset: 3px;
+}
+
+.swap {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  margin-top: 29px;
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  color: var(--green);
+  border: 1px solid #b6c7bd;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.swap:disabled {
+  opacity: .4;
+}
+
+.journeySummary {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid #dbe3df;
+}
+
+.journeySummary strong {
+  font-size: 14px;
+}
+
+.journeySummary p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.directionArrow {
+  color: var(--green);
+  font-size: 22px;
+}
+
+.results,.alerts {
+  margin-top: 24px;
+}
+
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.textButton {
+  color: var(--green);
+  background: none;
+  padding: 5px 0;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.small,.timestamp {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 8px 0;
+}
+
+.notice,.empty {
+  border-radius: 6px;
+  padding: 13px;
+  margin: 16px 0;
+  background: #f0f4f1;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  border-left: 3px solid #a7813c;
+  background: #faf6ec;
+}
+
+.empty p {
+  margin: 7px 0;
+}
+
+.empty a {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.trainCard {
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid #cbdcd1;
+  border-radius: 8px;
+  background: #f7faf8;
+}
+
+.trainTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.trainLabel {
+  font-weight: 700;
+}
+
+.trainDeparture {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 0;
+}
+
+.trainDeparture>strong {
+  font-size: 32px;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.trainDeparture>strong small {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.trainDeparture>span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.trainDeparture>span small {
+  display: block;
+  font-size: 12px;
+}
+
+.destinationEstimate {
+  display: grid;
+  gap: 5px;
+  padding-top: 11px;
+  margin-top: 10px;
+  border-top: 1px solid #dbe3df;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.destinationEstimate strong {
+  font-size: 14px;
+}
+
+.destinationEstimate small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.alertCount {
+  border-radius: 20px;
+  background: #eef2ee;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+.alert {
+  border-bottom: 1px solid #dbe3df;
+  padding: 13px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.alert summary {
+  cursor: pointer;
+}
+
+.alert summary span {
+  display: block;
+  color: #826524;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.alert p {
+  white-space: pre-line;
+}
+
+.allClear {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sidebarFooter {
+  margin-top: 28px;
+  border-top: 1px solid #dbe3df;
+  padding-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media(min-width:1500px) {
+  .workspace {
+    grid-template-columns: minmax(0,1fr) 390px;
+  }
+}
+
+@media(max-width:800px) {
+  .header {
+    padding: 14px 16px;
+  }
+
+  .brand {
+    font-size: 13px;
+  }
+
+  .mbtaLink {
+    font-size: 12px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    padding: 24px 20px;
+    border-left: 0;
+    border-top: 1px solid #dbe3df;
+    max-height: none;
+    overflow: visible;
+  }
+}
