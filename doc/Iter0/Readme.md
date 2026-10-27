@@ -1,4 +1,4 @@
-This folder contains all required documents, including SPPP, SDD, STD, meetingminutes and progressreport for iteration 0
+This folder contains all required documents, including SPPP, SDD, STD, meeting minutes and progress report for iteration 0
 
 doc/CS673_presentation0_team2
 
