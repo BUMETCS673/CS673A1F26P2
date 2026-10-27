@@ -1,4 +1,9 @@
 /*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Using the data model in mbta-api.js complete the endpoint of making prediction
+ * AI Contribution: (~75%)
+ *
  * Description:
  * Defines the API route for retrieving live MBTA arrival and departure predictions.
  * It accepts supported query parameters, validates user input, and returns either
