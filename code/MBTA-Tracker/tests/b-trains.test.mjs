@@ -2,14 +2,14 @@
  * AI-ASSISTED
  * Tool: OpenAI Codex
  * Model: Exact model not recorded
- * Prompt Summary: Test same-trip prediction matching, invalid predictions and vehicle observations.
+ * Prompt Summary: Test prediction matching, offline estimates, vehicle observations and departure queue replenishment.
  * AI Contribution: (~100%)
  * Estimate basis: Owner assessment, not measured code authorship.
  */
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { journeyTrains, journeyVehicles } from "../lib/b-trains.mjs";
+import { journeyTrains, journeyVehicles, offlineJourneyTrains, estimateMinutes } from "../lib/b-trains.mjs";
 
 const now = Date.parse("2026-10-13T12:00:00Z");
 const time = (minutes) => new Date(now + minutes * 60000).toISOString();
@@ -247,4 +247,43 @@ test("vehicle presence rejects wrong direction, station, movement, stale time an
     journeyVehicles({ data: [observedVehicle()] }, journey, now + 60001).length,
     0,
   );
+});
+
+ test("offline estimates count down from absolute times and expire without asserting departure", () => {
+ const doc={data:[prediction("a","start","a",1,8),prediction("b","end","a",3,30)]};
+ const saved=offlineJourneyTrains(doc,journey,now,now)[0];
+ assert.equal(estimateMinutes(saved.departure,now),8);
+ assert.equal(estimateMinutes(saved.departure,now+120000),6);
+ assert.equal(offlineJourneyTrains(doc,journey,now,now+8*60000).length,1);
+ assert.equal(estimateMinutes(saved.departure,now+9*60000),0);
+ assert.equal(offlineJourneyTrains(doc,journey,now,now+10*60000+1).length,0);
+ assert.equal(offlineJourneyTrains(doc,journey,now,now-1).length,0);
+ assert.equal(estimateMinutes(null,now),null);
+ assert.equal(saved.destinationArrival,time(30));
+ });
+ test("offline retention is bounded and successful empty or cancelled data clears estimates", () => {
+ const doc={data:[prediction("a","start","a",1,30)]};
+ assert.equal(offlineJourneyTrains(doc,journey,now,now+15*60000+1).length,0);
+ assert.deepEqual(offlineJourneyTrains({data:[]},journey,now,now),[]);
+ doc.data[0].attributes.schedule_relationship="CANCELED";
+ assert.deepEqual(offlineJourneyTrains(doc,journey,now,now),[]);
+ });
+
+test("full saved pool promotes fourth and fifth trips as earlier departures expire", () => {
+  const data = [1, 4, 7, 10, 13].flatMap((minute, i) => [
+    prediction('o' + i, 'start', 'trip' + i, 1, minute),
+    prediction('d' + i, 'end', 'trip' + i, 23, minute + 40),
+  ]);
+  data.push(data[2]); // duplicate upstream record cannot occupy another card
+  const doc = { data };
+  const ids = rows => rows.map(row => row.trip);
+  assert.deepEqual(ids(journeyTrains(doc, journey, now)), ['trip0', 'trip1', 'trip2']);
+  assert.deepEqual(ids(journeyTrains(doc, journey, now + 60001)), ['trip1', 'trip2', 'trip3']);
+  assert.deepEqual(ids(journeyTrains(doc, journey, now + 240001)), ['trip2', 'trip3', 'trip4']);
+  assert.deepEqual(ids(offlineJourneyTrains(doc, journey, now, now + 360001)), ['trip2', 'trip3', 'trip4']);
+  assert.equal(journeyTrains(doc, journey, now + 600001).length, 1);
+  assert.equal(journeyTrains(doc, journey, now + 780001).length, 0);
+  const recovered = { data: data.filter(row => row.relationships.trip.data.id !== 'trip2') };
+  assert.deepEqual(ids(journeyTrains(recovered, journey, now + 240001)), ['trip3', 'trip4']);
+  assert.equal(doc.data.length, 11); // display never truncates the underlying pool
 });

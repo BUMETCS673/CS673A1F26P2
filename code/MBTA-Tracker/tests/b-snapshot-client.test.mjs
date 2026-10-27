@@ -2,7 +2,7 @@
  * AI-ASSISTED
  * Tool: OpenAI Codex
  * Model: Exact model not recorded
- * Prompt Summary: Test manual refresh, request sharing, cooldowns and local countdown behavior.
+ * Prompt Summary: Test automatic and manual updates, visibility cleanup, backoff and preservation of last-known data.
  * AI Contribution: (~100%)
  * Estimate basis: Owner assessment, not measured code authorship.
  */
@@ -40,10 +40,10 @@ test("initial request is coalesced; time, selections and cooldown refreshes do n
   assert.equal(maxActive, 1);
   now += 3600000;
   assert.equal(client.getState().data.predictionsCheckedAt, 1030000);
-  assert.equal(calls, 2, "elapsed time alone never requests data");
+  assert.equal(calls, 2, "without starting automatic updates, elapsed time does not request data");
 });
 
-test("429 and transport failures remain errors and only explicit refresh retries after backoff", async () => {
+test("explicit loads preserve 429 and transport failures and respect backoff", async () => {
   let now = 1000000,
     calls = 0;
   const client = createSnapshotClient(
