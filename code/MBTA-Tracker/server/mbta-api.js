@@ -1,4 +1,10 @@
 /*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary:Based on the Documents of MBTA APIs, complete the getPredictions, getVehicles and getSchedules function
+ * and other helper function needed then reorganize the data retrieved in clear order.
+ * AI Contribution: (~75%)
+ *
  * Description:
  * Provides the server-side client for requesting and validating data from the
  * MBTA V3 API. It builds query strings, applies caching and timeout policies,

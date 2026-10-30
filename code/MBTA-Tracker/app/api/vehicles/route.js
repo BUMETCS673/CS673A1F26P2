@@ -1,4 +1,9 @@
 /*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Using the data model in mbta-api.js complete the endpoint of tracking the arrival time of trains
+ * AI Contribution: (~85%)
+ *
  * Description:
  * Defines the API route for retrieving current MBTA vehicle information. It
  * limits requests to the supported route, direction, and relationship parameters,

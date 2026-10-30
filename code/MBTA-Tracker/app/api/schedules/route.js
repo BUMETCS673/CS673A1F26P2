@@ -1,4 +1,9 @@
 /*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Using the data model in mbta-api.js complete the endpoint of getting schedule
+ * AI Contribution: (~75%)
+ *
  * Description:
  * Defines the API route for retrieving planned MBTA schedule information. It
  * accepts route, stop, trip, date, time, direction, and pagination options while
