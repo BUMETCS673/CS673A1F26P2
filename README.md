@@ -30,14 +30,14 @@ pnpm dev
 # or
 bun dev
 ```
-![start up step1](public/start up step1.png)
+![start-up-step1](public/start-up-step1.png)
 
 2. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-![start up step2](public/start up step2.png)
+![start-up-step2](public/start-up-step2.png)
 
 
 3. Then you can try the MBTA Tracker by yourself. You can start editing the page by modifying `app/page.js` or other files. The page auto-updates as you edit the file.
-![start up step3](public/start up step3.png)
+![start-up-step3](public/start-up-step3.png)
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
