@@ -1,23 +1,10 @@
 # MBTA Tracker
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Brief
 This is a web app allow user to track the Massachusetts Bay Transportation Authority trains in great Boston area.
 It provides a MBTA map, predictions and schedules of every stop of rails in real-time. The user can better arrange their time of commuting using this web app.
 This app is built by Next.js with React.
-
-## Team Members
-
-| Name |
-| --- |
-| Wenbo Fan |
-| Yuexian Feng (Luna) |
-| The Anh Tran (Bill) |
-| Yuchen Bao |
-| Zhiao Chu |
-
-# MBTA Tracker
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 
 ## Setup
 
