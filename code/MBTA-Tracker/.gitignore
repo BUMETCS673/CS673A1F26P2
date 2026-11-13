@@ -39,6 +39,7 @@ yarn-error.log*
 !/lib/b-journey.mjs
 !/lib/b-trains.mjs
 !/lib/b-schedules.mjs
+!/lib/route-cookies.mjs
 /README.local.md
 
 # if you use some Agentic AI please remember to add their .md file to .gitignore

@@ -1,3 +1,4 @@
+
 /*
  * AI-ASSISTED
  * Tool: OpenAI Codex
@@ -54,7 +55,7 @@
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0,1fr) 360px;
+  grid-template-columns: minmax(0,1fr) 400px;
   align-items: start;
 }
 
@@ -344,7 +345,7 @@
 
 @media(min-width:1500px) {
   .workspace {
-    grid-template-columns: minmax(0,1fr) 390px;
+    grid-template-columns: minmax(0,1fr) 420px;
   }
 }
 
@@ -371,5 +372,139 @@
     border-top: 1px solid #dbe3df;
     max-height: none;
     overflow: visible;
+  }
+}
+
+
+/* Saved Routes & History redesign */
+.searchActions { display:flex; align-items:center; gap:10px; margin:16px 0 18px; }
+.searchButton { flex:1; min-height:44px; border:0; border-radius:22px; background:linear-gradient(110deg,#07823d,#007a36); color:#fff; font:inherit; font-weight:700; font-size:15px; cursor:pointer; }
+.searchButton span { font-size:25px; vertical-align:-2px; margin-right:6px; }
+.searchButton:disabled { opacity:.5; cursor:not-allowed; }
+.favoriteAction { width:44px; height:44px; flex:none; border-radius:50%; border:1px solid #b6c7bd; color:#087c3c; background:#fff; font-size:29px; line-height:1; cursor:pointer; }
+.favoriteActionActive { color:#eda80b; }
+.favoriteAction:disabled { opacity:.45; cursor:not-allowed; }
+.historyPanel { border:1px solid #80b496; border-radius:10px; overflow:hidden; margin:14px 0 20px; background:#fff; }
+.historyToggle { display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:13px 14px; border:0; background:linear-gradient(110deg,#f0f9f3,#f9fcfa); color:var(--ink); cursor:pointer; font:inherit; }
+.bookmarkIcon { font-size:28px; color:#087b41; width:25px; text-align:center; }
+.historyTitle { display:grid; gap:4px; flex:1; min-width:0; }
+.historyTitle strong { font-size:14px; }
+.historyTitle small { font-size:12px; color:var(--muted); }
+.chevron { font-size:25px; line-height:1; }
+.historyBody { border-top:1px solid #e1ebe5; padding:10px; }
+.historyTabs { display:grid; grid-template-columns:1fr 1fr; border:1px solid #cbd9d0; border-radius:8px; overflow:hidden; }
+.historyTabs button { min-width:0; padding:10px 5px; border:0; background:#fff; color:var(--ink); font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+.historyTabs button+button { border-left:1px solid #cbd9d0; }
+.historyTabs .historyTabActive { background:#007a3d; color:#fff; }
+.historyList { max-height:260px; min-height:52px; overflow-y:auto; margin:8px 0 10px; scrollbar-width:thin; }
+.historyEmpty { margin:14px 5px; font-size:12px; color:var(--muted); }
+.historyRow { display:flex; align-items:center; min-height:49px; gap:4px; border-bottom:1px solid #e2e9e4; }
+.rowStar { border:0; background:none; color:#87968e; font-size:24px; cursor:pointer; width:29px; flex:none; }
+.rowStarSaved { color:#f0ac0d; }
+.routeChoice { display:flex; align-items:center; justify-content:space-between; gap:5px; flex:1; min-width:0; padding:10px 2px; text-align:left; border:0; background:none; color:var(--ink); font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+.routeChoice span:first-child { overflow-wrap:anywhere; }
+.rowChevron { font-size:24px; flex:none; font-weight:400; }
+.rowDelete { flex:none; width:20px; border:0; background:none; color:#89958e; cursor:pointer; font-size:19px; }
+.rowDelete:hover { color:#b52626; }
+.clearHistory { width:100%; min-height:39px; background:#fff; border:1px solid #b9cfc1; border-radius:8px; font:inherit; font-size:12px; font-weight:700; cursor:pointer; color:var(--ink); }
+.clearHistory:disabled { opacity:.5; cursor:not-allowed; }
+.clearHistory span { margin-right:5px; }
+.searchHint { margin:16px 0; font-size:12px; line-height:1.5; color:var(--muted); }
+.modalBackdrop { position:fixed; inset:0; z-index:1000; background:rgba(16,29,24,.46); display:flex; align-items:center; justify-content:center; padding:20px; }
+.confirmDialog { position:relative; width:min(100%,420px); padding:30px; border-radius:18px; background:#fff; box-shadow:0 18px 55px #10231b35; color:var(--ink); }
+.modalClose { position:absolute; top:14px; right:17px; background:none; border:0; font-size:29px; cursor:pointer; }
+.modalDeleteIcon { display:grid; place-items:center; width:50px; height:50px; border-radius:50%; background:#ffe5e5; color:#b91c1c; font-size:26px; margin-bottom:18px; }
+.confirmDialog h2 { font-size:23px; margin:0 0 12px; }
+.confirmDialog p { color:var(--muted); font-size:15px; line-height:1.6; margin:0 0 28px; }
+.modalActions { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modalActions button { min-height:44px; border-radius:10px; font:inherit; font-weight:700; cursor:pointer; }
+.cancelButton { background:#fff; border:1px solid #829d8c; color:var(--ink); }
+.confirmButton { background:#007a3d; color:#fff; border:1px solid #007a3d; }
+@media(max-width:800px) { .historyList { max-height:220px; } }
+
+/* Default Route */
+
+.defaultButton {
+  flex: none;
+  padding: 6px 8px;
+  border: 1px solid #b7d3c1;
+  border-radius: 6px;
+  background: #fff;
+  color: #087a3c;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.defaultButton:hover {
+  background: #edf8f0;
+}
+
+.defaultButtonActive {
+  background: #e5f5e9;
+  border-color: #07813c;
+  color: #056b33;
+}
+
+.defaultButtonActive:hover {
+  background: #d5eedc;
+}
+
+@media (max-width: 800px) {
+  .defaultButton {
+    padding: 5px;
+    font-size: 9px;
+  }
+}
+/* Favorite Routes Layout */
+
+.historyRow:has(.defaultButton) {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 28px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 3px;
+  padding: 10px 4px;
+  min-height: 72px;
+}
+
+.historyRow:has(.defaultButton) .rowStar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.historyRow:has(.defaultButton) .routeChoice {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0;
+  line-height: 1.45;
+  font-size: 12px;
+}
+
+.historyRow:has(.defaultButton) .rowDelete {
+  grid-column: 3;
+  grid-row: 1;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+}
+
+.historyRow .defaultButton {
+  grid-column: 2 / 4;
+  grid-row: 2;
+  justify-self: end;
+  padding: 6px 12px;
+  font-size: 11px;
+  border-radius: 7px;
+}
+
+@media (max-width: 800px) {
+  .historyRow .defaultButton {
+    padding: 6px 10px;
+    font-size: 11px;
   }
 }
