@@ -888,10 +888,6 @@
   }
 }
 
-.weatherCard { margin-top: 18px; padding: 14px; border: 1px solid #d5e2db; border-radius: 8px; background: #f4f8f6; }
-.weatherCard h3 { margin: 0; font-size: 14px; }
-.weatherCard > p { line-height: 1.5; }
-.weatherCard a { color: var(--green); text-decoration: underline; }
 
 /* Saved Routes & History redesign */
 .searchActions { display:flex; align-items:center; gap:10px; margin:16px 0 18px; }

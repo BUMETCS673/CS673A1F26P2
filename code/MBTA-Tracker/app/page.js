@@ -20,7 +20,8 @@ import { MAX_STOPS, STOP_LETTERS, LIVE_WINDOW_MS, leaveTimes, sortStopsByTime } 
 import source from "./data/subway-network.json";
 import StationSearch, { RouteBadge } from "./components/StationSearch";
 import SubwayMap from "./components/SubwayMap";
-import WeatherForecast from "./components/WeatherForecast";
+import StationWeather from "./components/StationWeather";
+import { journeyWeatherTiming } from "@/lib/journey-timing.mjs";
 import RouteHistory from "./components/RouteHistory";
 import { getDefaultRoute } from "@/lib/route-cookies.mjs";
 import styles from "./page.module.css";
@@ -108,7 +109,7 @@ function useNow(interval) {
   return now;
 }
 
-function AlertsSection({ snapshot, journey, now, index, heading = "Along your route", leaveAt = null }) {
+function AlertsSection({ snapshot, journey, now, index, heading = "Along your route" }) {
   const data = snapshot.data;
   const alerts = data?.alerts ? journeyAlerts(data.alerts, journey) : [];
   const alertsChecked = data?.alertsCheckedAt ?? data?.checkedAt ?? snapshot.checked;
@@ -152,7 +153,6 @@ function AlertsSection({ snapshot, journey, now, index, heading = "Along your ro
           </details>
         ))
       )}
-      {index === 0 && <WeatherForecast key={leaveAt ?? "now"} leaveAt={leaveAt} />}
       <p className={styles.small}>
         Checks the selected stations, platforms and branch-wide notices.
       </p>
@@ -467,8 +467,14 @@ function plannedLegs(journey, data, leaveAt) {
   });
 }
 
-function ItineraryResults({ journey, leave, planned }) {
+function ItineraryResults({ journey, leave, planned, timingKey, onWeatherTiming }) {
   const snapshot = useSnapshot(journey, planned ? leave.at : null);
+  const weatherNow = useNow(15000);
+  const weatherTiming = journeyWeatherTiming(journey, snapshot, leave.at, planned, weatherNow);
+  const { departure, arrival, scheduled, reason } = weatherTiming;
+  useEffect(() => {
+    onWeatherTiming({ key: timingKey, departure, arrival, scheduled, reason });
+  }, [onWeatherTiming, timingKey, departure, arrival, scheduled, reason]);
   const transferCount = journey.legs.length - 1;
   const plans = planned ? plannedLegs(journey, snapshot.data, leave.at) : null;
   return (
@@ -569,6 +575,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [focusKey, setFocusKey] = useState(null);
   const [reorder, setReorder] = useState(null);
+  const [weatherTiming, setWeatherTiming] = useState(null);
   const now = useNow(15000);
 
   useEffect(() => {
@@ -589,6 +596,8 @@ export default function Home() {
   });
   const tab = Math.min(activeTab, segments.length - 1);
   const segment = segments[tab];
+  const timingKey = `${segment.from}:${segment.to}:${segment.leave.at ?? "now"}`;
+  const activeWeatherTiming = weatherTiming?.key === timingKey ? weatherTiming : { departure: Math.max(now, segment.leave.at ?? now), arrival: null, reason: "Waiting for an arrival estimate" };
 
   const markers = {};
   stops.forEach((stop, index) => {
@@ -682,6 +691,7 @@ export default function Home() {
           journey={mapJourney}
           markers={markers}
           activeLetter={STOP_LETTERS[current]}
+          weatherOverlay={<StationWeather origin={transitNetwork.stops.find(stop => stop.id === segment.from)} destination={transitNetwork.stops.find(stop => stop.id === segment.to)} timing={activeWeatherTiming} />}
           onPick={pickFromMap}
         />
         <aside
@@ -760,6 +770,8 @@ export default function Home() {
                   journey={segment.journey}
                   leave={segment.leave}
                   planned={segment.planned}
+                  timingKey={timingKey}
+                  onWeatherTiming={setWeatherTiming}
                 />
               ) : (
                 <p role="status" className={styles.notice}>{segmentMessage(segment, segments.length === 1)}</p>

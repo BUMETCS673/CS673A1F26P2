@@ -44,6 +44,7 @@ export default function SubwayMap({
   markers = {},
   activeLetter = "A",
   onPick,
+  weatherOverlay,
 }) {
   const viewport = useRef(null),
     svg = useRef(null),
@@ -338,6 +339,7 @@ export default function SubwayMap({
           </button>
         </div>
       </div>
+      <div className={styles.mapStage}>
       <div className={styles.viewport} ref={viewport}>
         <svg
           ref={svg}
@@ -505,6 +507,8 @@ export default function SubwayMap({
             );
           })}
         </svg>
+      </div>
+      {weatherOverlay && <div className={styles.weatherDock}>{weatherOverlay}</div>}
       </div>
       <div className={styles.footer}>
         <p id="map-instructions" className={styles.srOnly}>

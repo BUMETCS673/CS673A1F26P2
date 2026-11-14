@@ -110,5 +110,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-### Departure weather
-The alerts section includes a Boston-area hourly forecast for the selected segment's leave time (or now when omitted/passed). It shows temperature, precipitation probability and wind from the National Weather Service. No API key is required. Forecasts refresh every five minutes while visible; unavailable hours and service failures are explicitly labeled. This is a Boston forecast, not station-specific weather or a severe-weather warning service. Only the first transfer panel shows the card. Run the data tests with the command above; weather tests use mocked responses.
+### Station weather
+Two map cards use feature/weather's Open-Meteo service and unchanged 34-region station mapping. For the selected itinerary segment, the starting card uses the leave time (now if omitted/passed); the destination card uses the first usable journey's estimated or scheduled arrival. Transfer estimates require data for every leg; walking transfers, suspensions, missing arrivals, and stale transit data leave the arrival weather unavailable. They are estimates, not guaranteed connections.
+
+Forecasts cover the next two hours. Unsupported stations and times are explicitly labeled. Stations in the same mapped region share weather; different regions use their own representative coordinates. The existing process-local service refreshes every ten minutes once the weather endpoint is used. No National Weather Service requests are made. Cards appear at the top right of the map on desktop and above the map on smaller screens. Open-Meteo attribution is shown on each card.
