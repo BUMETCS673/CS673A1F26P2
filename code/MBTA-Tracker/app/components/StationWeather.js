@@ -69,8 +69,9 @@ export default function StationWeather({ origin, destination, timing }) {
   // Minute granularity avoids refetching weather on each countdown update.
   const departure = timing?.departure == null ? null : Math.ceil(timing.departure / 60000) * 60000;
   const arrival = timing?.arrival == null ? null : Math.ceil(timing.arrival / 60000) * 60000;
+  if (!origin && !destination) return null;
   return <div className={styles.cards}>
-    <Card key={`from:${origin?.id}:${departure}`} station={origin} kind="Departure" at={departure} />
-    <Card key={`to:${destination?.id}:${arrival}`} station={destination} kind="Arrival" at={arrival} unavailable={timing?.reason} scheduled={timing?.scheduled} />
+    {origin && <Card key={`from:${origin?.id}:${departure}`} station={origin} kind="Departure" at={departure} />}
+    {destination && <Card key={`to:${destination?.id}:${arrival}`} station={destination} kind="Arrival" at={arrival} unavailable={timing?.reason} scheduled={timing?.scheduled} />}
   </div>;
 }

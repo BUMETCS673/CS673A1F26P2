@@ -13,7 +13,7 @@ export default function RouteHistory({ origin, destination, valid, stations, onC
   const [defaultRoute, setDefault] = useState(null);
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('favorites');
-  const [message, setMessage] = useState('');
+  const [confirmClear, setConfirmClear] = useState(null);
   useEffect(() => {
     let active = true;
     Promise.resolve().then(() => {
@@ -38,47 +38,327 @@ export default function RouteHistory({ origin, destination, valid, stations, onC
   function toggle(route) {
     if (favorites.some(item => same(item, route))) { remove(route); return; }
     const result = addFavoriteRoute(route.origin, route.destination);
-    if (result.success) { setFavorites(result.routes); setMessage('Route saved.'); }
-    else setMessage(result.reason === 'limit' ? 'You can save up to 10 favorite routes.' : 'This route could not be saved.');
+    if (result.success) { setFavorites(result.routes); }
+    else window.alert(result.reason === 'limit' ? 'You can save up to 10 favorite routes.' : 'This route could not be saved.');
   }
   function chooseDefault(route) {
     if (same(defaultRoute, route)) { clearDefaultRoute(); setDefault(null); }
     else { const result = setDefaultRoute(route.origin, route.destination); if (result.success) setDefault(result.route); }
   }
-  const routes = (tab === 'favorites' ? favorites : recents).filter(known);
-  return <section className={styles.historyPanel} aria-label="Saved routes and history">
+  // Preserve feature/cookies markup while adapting it to the selected segment.
+  const validFavorites = favorites.filter(known), validRecents = recents.filter(known);
+  const historyOpen = open, setHistoryOpen = setOpen;
+  const historyTab = tab, setHistoryTab = setTab;
+  const activeRoutes = tab === 'favorites' ? validFavorites : validRecents;
+  const clearCount = confirmClear === 'favorites' ? validFavorites.length : validRecents.length;
+  const stopName = name, toggleFavorite = toggle, setRecentRoutes = setRecents;
+  const isDefaultRoute = route => same(defaultRoute, route);
+  const handleSetDefault = chooseDefault;
+  const handleCancelDefault = () => { clearDefaultRoute(); setDefault(null); };
+  const removeFavorite = (origin, destination) => remove({ origin, destination });
+  const runSearch = (origin, destination) => onChoose({ origin, destination });
+  const selectedIsFavorite = validFavorites.some(route => same(route, current));
+  function clearSelectedList() {
+    if (confirmClear === 'favorites') { setFavorites(clearFavoriteRoutes()); setDefault(null); }
+    else setRecents(clearRecentRoutes());
+    setConfirmClear(null);
+  }
+  return <>
     <div className={styles.searchActions}>
-      <button type="button" className={styles.favoriteAction} disabled={!valid} onClick={() => toggle(current)}
-        aria-label={favorites.some(r => same(r, current)) ? 'Remove selected segment from favorites' : 'Save selected segment as favorite'}>
-        {favorites.some(r => same(r, current)) ? '★' : '☆'}
+      <button type="button" className={`${styles.favoriteAction} ${selectedIsFavorite ? styles.favoriteActionActive : ''}`}
+        disabled={!valid} onClick={() => toggleFavorite(current)}
+        aria-label={selectedIsFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        title={selectedIsFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+        {selectedIsFavorite ? '★' : '☆'}
       </button>
-      <span className={styles.small}>Save the selected segment. Saved routes contain two stations, without leave times.</span>
     </div>
-    <button type="button" className={styles.historyToggle} aria-expanded={open} onClick={() => setOpen(!open)}>
-      Saved Routes &amp; History · {favorites.length} favorites · {recents.length} recent
-    </button>
-    {message && <p role="status" className={styles.small}>{message}</p>}
-    {open && <div className={styles.historyBody}>
-      <div className={styles.historyTabs}>
-        {['favorites', 'recent'].map(value => <button key={value} type="button" aria-pressed={tab === value}
-          className={tab === value ? styles.historyTabActive : ''} onClick={() => setTab(value)}>{value === 'favorites' ? 'Favorites' : 'Recent searches'}</button>)}
-      </div>
-      <p className={styles.small}>Choosing a saved route replaces the current itinerary with that station pair.</p>
-      <div className={styles.historyList}>
-        {!routes.length && <p className={styles.historyEmpty}>No saved routes yet.</p>}
-        {routes.map(route => <div className={styles.historyRow} key={`${route.origin}:${route.destination}`}>
-          <button type="button" className={styles.rowStar} onClick={() => toggle(route)} aria-label={`Toggle favorite ${name(route.origin)} to ${name(route.destination)}`}>{favorites.some(r => same(r, route)) ? '★' : '☆'}</button>
-          <button type="button" className={styles.routeChoice} onClick={() => onChoose(route)}>{name(route.origin)} → {name(route.destination)}</button>
-          <button type="button" className={styles.rowDelete} aria-label={`Delete ${name(route.origin)} to ${name(route.destination)}`}
-            onClick={() => tab === 'favorites' ? remove(route) : setRecents(removeRecentRoute(route.origin, route.destination))}>×</button>
-          {tab === 'favorites' && <button type="button" className={styles.defaultButton} aria-pressed={same(defaultRoute, route)} onClick={() => chooseDefault(route)}>{same(defaultRoute, route) ? 'Cancel default' : 'Set default'}</button>}
-        </div>)}
-      </div>
-      <button type="button" className={styles.clearHistory} disabled={!routes.length} onClick={() => {
-        if (!window.confirm(`Clear all ${tab === 'favorites' ? 'favorite routes and the default route' : 'recent searches'}?`)) return;
-        if (tab === 'favorites') { setFavorites(clearFavoriteRoutes()); setDefault(null); }
-        else setRecents(clearRecentRoutes());
-      }}>Clear {tab === 'favorites' ? 'favorites' : 'recent searches'}</button>
-    </div>}
-  </section>;
+              <section
+                className={styles.historyPanel}
+                aria-label="Saved Routes and History"
+              >
+                <button
+                  type="button"
+                  className={styles.historyToggle}
+                  aria-expanded={historyOpen}
+                  onClick={() =>
+                    setHistoryOpen((value) => !value)
+                  }
+                >
+                  <span
+                    className={styles.bookmarkIcon}
+                    aria-hidden="true"
+                  >
+                    ♧
+                  </span>
+
+                  <span className={styles.historyTitle}>
+                    <strong>
+                      Saved Routes &amp; History
+                    </strong>
+                    <small>
+                      {validFavorites.length} favorites ·{" "}
+                      {validRecents.length} recent searches
+                    </small>
+                  </span>
+
+                  <span
+                    className={styles.chevron}
+                    aria-hidden="true"
+                  >
+                    {historyOpen ? "⌃" : "⌄"}
+                  </span>
+                </button>
+
+                {historyOpen && (
+                  <div className={styles.historyBody}>
+                    <div
+                      className={styles.historyTabs}
+                      role="tablist"
+                      aria-label="Route history category"
+                    >
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={
+                          historyTab === "favorites"
+                        }
+                        className={
+                          historyTab === "favorites"
+                            ? styles.historyTabActive
+                            : ""
+                        }
+                        onClick={() =>
+                          setHistoryTab("favorites")
+                        }
+                      >
+                        ★ Favorites ({validFavorites.length})
+                      </button>
+
+                      <button
+                        type="button"
+                        role="tab"
+                        aria-selected={
+                          historyTab === "recent"
+                        }
+                        className={
+                          historyTab === "recent"
+                            ? styles.historyTabActive
+                            : ""
+                        }
+                        onClick={() =>
+                          setHistoryTab("recent")
+                        }
+                      >
+                        ◷ Recent Searches ({validRecents.length})
+                      </button>
+                    </div>
+
+                    <div
+                      className={styles.historyList}
+                      role="tabpanel"
+                    >
+                      {activeRoutes.length === 0 ? (
+                        <p className={styles.historyEmpty}>
+                          {historyTab === "favorites"
+                            ? "No favorite routes saved yet."
+                            : "No recent searches yet."}
+                        </p>
+                      ) : (
+                        activeRoutes.map((route) => {
+                          const saved = validFavorites.some(
+                            (item) =>
+                              item.origin === route.origin &&
+                              item.destination === route.destination
+                          );
+
+                          const isDefault = isDefaultRoute(route);
+
+                          return (
+                            <div
+                              className={styles.historyRow}
+                              key={`${route.origin}-${route.destination}`}
+                            >
+                              <button
+                                type="button"
+                                className={`${styles.rowStar} ${
+                                  saved ? styles.rowStarSaved : ""
+                                }`}
+                                aria-label={
+                                  saved
+                                    ? `Remove ${stopName(route.origin)} to ${stopName(route.destination)} from favorites`
+                                    : `Favorite ${stopName(route.origin)} to ${stopName(route.destination)}`
+                                }
+                                onClick={() =>
+                                  toggleFavorite(route)
+                                }
+                              >
+                                {saved ? "★" : "☆"}
+                              </button>
+
+                              <button
+                                type="button"
+                                className={styles.routeChoice}
+                                onClick={() =>
+                                  runSearch(
+                                    route.origin,
+                                    route.destination
+                                  )
+                                }
+                                title="Use this route"
+                              >
+                                <span>
+                                  {stopName(route.origin)}{" "}
+                                  →{" "}
+                                  {stopName(route.destination)}
+                                </span>
+
+                                <span
+                                  className={styles.rowChevron}
+                                  aria-hidden="true"
+                                >
+                                  ›
+                                </span>
+                              </button>
+
+                              {historyTab === "favorites" && (
+                                <button
+                                  type="button"
+                                  className={`${styles.defaultButton} ${
+                                    isDefault
+                                      ? styles.defaultButtonActive
+                                      : ""
+                                  }`}
+                                  aria-pressed={isDefault}
+                                  aria-label={
+                                    isDefault
+                                      ? `Cancel default route ${stopName(route.origin)} to ${stopName(route.destination)}`
+                                      : `Set ${stopName(route.origin)} to ${stopName(route.destination)} as default route`
+                                  }
+                                  onClick={() => {
+                                    if (isDefault) {
+                                      handleCancelDefault();
+                                    } else {
+                                      handleSetDefault(route);
+                                    }
+                                  }}
+                                >
+                                  {isDefault
+                                    ? "📌 Default"
+                                    : "Set Default"}
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                className={styles.rowDelete}
+                                aria-label={`Delete ${stopName(route.origin)} to ${stopName(route.destination)} from ${historyTab}`}
+                                onClick={() => {
+                                  if (historyTab === "favorites") {
+                                    removeFavorite(
+                                      route.origin,
+                                      route.destination
+                                    );
+                                  } else {
+                                    setRecentRoutes(
+                                      removeRecentRoute(
+                                        route.origin,
+                                        route.destination
+                                      )
+                                    );
+                                  }
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.clearHistory}
+                      disabled={activeRoutes.length === 0}
+                      onClick={() =>
+                        setConfirmClear(historyTab)
+                      }
+                    >
+                      <span aria-hidden="true">♜</span>{" "}
+                      Clear{" "}
+                      {historyTab === "favorites"
+                        ? "Favorites"
+                        : "Recent Searches"}
+                    </button>
+                  </div>
+                )}
+              </section>
+      {confirmClear && (
+        <div
+          className={styles.modalBackdrop}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setConfirmClear(null);
+            }
+          }}
+        >
+          <div
+            className={styles.confirmDialog}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="clear-title"
+            aria-describedby="clear-description"
+          >
+            <button
+              type="button"
+              className={styles.modalClose}
+              onClick={() => setConfirmClear(null)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <div
+              className={styles.modalDeleteIcon}
+              aria-hidden="true"
+            >
+              ▤
+            </div>
+
+            <h2 id="clear-title">
+              Clear{" "}
+              {confirmClear === "favorites"
+                ? "Favorites"
+                : "Recent Searches"}
+              ?
+            </h2>
+
+            <p id="clear-description">
+              {confirmClear === "favorites"
+                ? `This will remove all ${clearCount} saved favorite routes. Your recent searches will be kept.`
+                : `This will remove all recent search history (${clearCount} routes). Your favorite routes will be kept.`}
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setConfirmClear(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className={styles.confirmButton}
+                onClick={clearSelectedList}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+  </>;
 }
