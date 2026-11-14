@@ -20,6 +20,7 @@ import { MAX_STOPS, STOP_LETTERS, LIVE_WINDOW_MS, leaveTimes, sortStopsByTime } 
 import source from "./data/subway-network.json";
 import StationSearch, { RouteBadge } from "./components/StationSearch";
 import SubwayMap from "./components/SubwayMap";
+import WeatherForecast from "./components/WeatherForecast";
 import styles from "./page.module.css";
 
 const transitNetwork = plannerNetwork(source);
@@ -105,7 +106,7 @@ function useNow(interval) {
   return now;
 }
 
-function AlertsSection({ snapshot, journey, now, index, heading = "Along your route" }) {
+function AlertsSection({ snapshot, journey, now, index, heading = "Along your route", leaveAt = null }) {
   const data = snapshot.data;
   const alerts = data?.alerts ? journeyAlerts(data.alerts, journey) : [];
   const alertsChecked = data?.alertsCheckedAt ?? data?.checkedAt ?? snapshot.checked;
@@ -149,6 +150,7 @@ function AlertsSection({ snapshot, journey, now, index, heading = "Along your ro
           </details>
         ))
       )}
+      {index === 0 && <WeatherForecast key={leaveAt ?? "now"} leaveAt={leaveAt} />}
       <p className={styles.small}>
         Checks the selected stations, platforms and branch-wide notices.
       </p>
@@ -354,7 +356,7 @@ function JourneyResults({ journey, snapshot, index, leaveAt = null }) {
           estimates, not guarantees.
         </p>
       </section>
-      <AlertsSection snapshot={snapshot} journey={journey} now={now} index={index} />
+      <AlertsSection snapshot={snapshot} journey={journey} now={now} index={index} leaveAt={leaveAt} />
     </>
   );
 }
@@ -446,7 +448,7 @@ function PlannedResults({ journey, snapshot, index, start, trains, chained }) {
           Timetable times, not live predictions. Live countdowns replace them within 30 minutes of your leave time.
         </p>
       </section>
-      <AlertsSection snapshot={snapshot} journey={journey} now={now} index={index} heading="Alerts at your time" />
+      <AlertsSection snapshot={snapshot} journey={journey} now={now} index={index} heading="Alerts at your time" leaveAt={start} />
     </>
   );
 }

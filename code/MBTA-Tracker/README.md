@@ -109,3 +109,6 @@ To learn more about the MBTA API, go to the link below:
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Departure weather
+The alerts section includes a Boston-area hourly forecast for the selected segment's leave time (or now when omitted/passed). It shows temperature, precipitation probability and wind from the National Weather Service. No API key is required. Forecasts refresh every five minutes while visible; unavailable hours and service failures are explicitly labeled. This is a Boston forecast, not station-specific weather or a severe-weather warning service. Only the first transfer panel shows the card. Run the data tests with the command above; weather tests use mocked responses.
