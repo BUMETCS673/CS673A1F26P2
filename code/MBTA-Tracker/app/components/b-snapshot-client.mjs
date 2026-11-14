@@ -32,7 +32,8 @@ export function createSnapshotClient(fetchSnapshot, now = Date.now) {
       !data.schedulesError &&
       (!data.schedules || now() - data.schedulesCheckedAt < 300000) &&
       (!data.vehicles || now() - data.vehiclesCheckedAt < 30000) &&
-      now() - data.predictionsCheckedAt < 30000 &&
+      // Planned (timetable) snapshots carry no live predictions.
+      (data.planned || now() - data.predictionsCheckedAt < 30000) &&
       now() - data.alertsCheckedAt < 60000
     ) {
       if (manual) publish({ notice: "Already up to date." });

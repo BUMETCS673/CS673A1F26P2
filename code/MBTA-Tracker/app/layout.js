@@ -1,8 +1,8 @@
 /*
  * AI-ASSISTED
- * Tool: OpenAI Codex
+ * Tool: OpenAI Codex; GitHub Copilot
  * Model: Exact model not recorded
- * Prompt Summary: Set the page title and description for the Green B journey planner.
+ * Prompt Summary: Set the page title and description for the all-stations journey planner.
  * AI Contribution: (~90%)
  * Scope: AI-assisted page title and description changes only; excludes the existing layout and scaffold.
  * Estimate basis: Owner assessment, not measured code authorship.
@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "MBTA | B-branch journey planner",
+  title: "MBTA | All-stations journey planner",
   description:
-    "Plan a Green Line B journey between Boston College and Government Center with MBTA predictions and service alerts.",
+    "Search all subway, Mattapan, and Silver Line stations and plan direct or transfer journeys with MBTA predictions and service alerts.",
 };
 
 export default function RootLayout({ children }) {

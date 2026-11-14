@@ -9,10 +9,9 @@
 
 // Five process-local entries: topology, predictions, alerts, vehicles, schedules.
 // Expired data is never silently returned after an upstream failure.
-export function createSharedMbtaCache(loaders, now = Date.now) {
+export function createSharedMbtaCache(loaders, now = Date.now, rateLimit = { until: 0 }) {
   const ttl = { network: 3600000, predictions: 30000, alerts: 60000, vehicles: 30000, schedules: 300000 };
   const entries = new Map(Object.keys(ttl).map((key) => [key, { failures: 0 }]));
-  let rateLimitUntil = 0;
 
   function failure(message, status, retryAt) {
     return Object.assign(new Error(message), { status, retryAt });
@@ -25,11 +24,11 @@ export function createSharedMbtaCache(loaders, now = Date.now) {
     if (entry.snapshot && time - entry.snapshot.fetchedAt < ttl[key])
       return { ...entry.snapshot, reused: true };
     if (entry.pending) return entry.pending;
-    if (time < rateLimitUntil)
+    if (time < rateLimit.until)
       throw failure(
         "MBTA API rate limit exceeded. Requests are paused before retrying.",
         429,
-        rateLimitUntil,
+        rateLimit.until,
       );
     if (time < (entry.retryAt ?? 0)) throw entry.error;
 
@@ -63,7 +62,7 @@ export function createSharedMbtaCache(loaders, now = Date.now) {
                 ? date - time
                 : 0,
           );
-          rateLimitUntil = Math.max(rateLimitUntil, time + delay);
+          rateLimit.until = Math.max(rateLimit.until, time + delay);
         }
         entry.retryAt = time + delay;
         entry.error = failure(

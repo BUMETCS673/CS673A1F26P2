@@ -132,3 +132,18 @@ test("absolute times support both directions, local countdown and removal of exp
   }
   assert.equal(JSON.stringify(snapshot), saved);
 });
+
+test("planned timetable snapshots without predictions reuse data until alerts expire", async () => {
+  let now = 1000000, calls = 0;
+  const client = createSnapshotClient(async () => {
+    calls++;
+    return { planned: true, alertsCheckedAt: now, schedulesCheckedAt: now, schedules: { data: [] } };
+  }, () => now);
+  await client.load();
+  now += 59999;
+  await client.load();
+  assert.equal(calls, 1);
+  now += 1;
+  await client.load();
+  assert.equal(calls, 2);
+});

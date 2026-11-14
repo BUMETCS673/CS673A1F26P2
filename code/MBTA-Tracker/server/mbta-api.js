@@ -31,6 +31,7 @@
  */
 const MBTA_API_BASE_URL = "https://api-v3.mbta.com";
 const GREEN_LINE_ROUTE_IDS = ["Green-B", "Green-C", "Green-D", "Green-E"];
+const TRANSIT_ROUTE_IDS = [...GREEN_LINE_ROUTE_IDS, "Red", "Orange", "Blue", "Mattapan", "741", "742", "743", "751", "749", "746"];
 const DEFAULT_GREEN_LINE_ROUTES = GREEN_LINE_ROUTE_IDS.join(",");
 const REQUEST_TIMEOUT_MS = 10000;
 
@@ -168,14 +169,14 @@ function appendQueryValue(query, key, value) {
 function normalizeRouteFilter(route) {
   const routes = Array.isArray(route) ? route : String(route).split(",");
   const normalizedRoutes = routes.map((value) => value.trim()).filter(Boolean);
-  const invalidRoutes = normalizedRoutes.filter((value) => !GREEN_LINE_ROUTE_IDS.includes(value));
+  const invalidRoutes = normalizedRoutes.filter((value) => !TRANSIT_ROUTE_IDS.includes(value));
 
   if (normalizedRoutes.length === 0) {
     throw new MbtaApiError("At least one route must be provided.", 400);
   }
 
   if (invalidRoutes.length > 0) {
-    throw new MbtaApiError("Route filter is limited to Green-B, Green-C, Green-D, and Green-E.", 400);
+    throw new MbtaApiError("Route filter must use a supported subway, Mattapan, or Silver Line route.", 400);
   }
 
   return normalizedRoutes.join(",");

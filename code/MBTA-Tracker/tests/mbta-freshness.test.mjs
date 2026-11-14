@@ -18,9 +18,24 @@ const source = await readFile(
   "utf8",
 );
 
-const { getPredictions, getAlerts } = await import(
+const { getPredictions, getAlerts, getSchedules, getVehicles } = await import(
   `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`
 );
+
+test("API wrappers accept every rapid-transit route and still reject unrelated or invalid routes", async (t) => {
+  const routes = ["Red", "Orange", "Blue", "Mattapan", "Green-B", "Green-C", "Green-D", "Green-E", "741", "742", "743", "751", "749", "746"];
+  const urls = [];
+  t.mock.method(globalThis, "fetch", async (url) => {
+    urls.push(new URL(url));
+    return new Response(JSON.stringify({ data: [] }));
+  });
+  for (const read of [getPredictions, getAlerts, getSchedules, getVehicles]) {
+    await read({ route: routes, include: "trip,stop" });
+    assert.equal(urls.at(-1).searchParams.get("filter[route]"), routes.join(","));
+    await assert.rejects(read({ route: "CR-Fitchburg" }), (error) => error.status === 400);
+    await assert.rejects(read({ route: "invalid" }), (error) => error.status === 400);
+  }
+});
 
 for (const [name, read, cacheSeconds] of [
   ["predictions", getPredictions, 15],

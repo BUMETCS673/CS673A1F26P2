@@ -16,9 +16,9 @@ function atStop(item, stop) {
   return [stop.id, ...stop.platforms].includes(relation(item, "stop"));
 }
 
-function usable(item, direction) {
+function usable(item, direction, route = "Green-B") {
   return (
-    relation(item, "route") === "Green-B" &&
+    (Array.isArray(route) ? route : [route]).includes(relation(item, "route")) &&
     item.attributes.direction_id === direction &&
     item.attributes.revenue !== "NON_REVENUE" &&
     item.attributes.revenue_status !== "NON_REVENUE" &&
@@ -43,7 +43,7 @@ export function journeyTrains(document, journey, now = Date.now()) {
 
   return (
     records
-      .filter((item) => usable(item, journey.direction) && atStop(item, origin))
+      .filter((item) => usable(item, journey.direction, journey.routes ?? journey.route) && atStop(item, origin))
       // A null departure is the last stop of a trip; it cannot be boarded here.
       .filter((item) => timestamp(item.attributes.departure_time) >= now)
       .sort(
@@ -68,7 +68,7 @@ export function journeyTrains(document, journey, now = Date.now()) {
           (other) =>
             relation(other, "trip") === trip &&
             atStop(other, destination) &&
-            relation(other, "route") === "Green-B" &&
+            relation(other, "route") === relation(item, "route") &&
             other.attributes.direction_id === journey.direction &&
             Number.isInteger(item.attributes.stop_sequence) &&
             Number.isInteger(other.attributes.stop_sequence) &&
@@ -77,7 +77,7 @@ export function journeyTrains(document, journey, now = Date.now()) {
 
         const target = destinationRecords.find(
           (other) =>
-            usable(other, journey.direction) &&
+            usable(other, journey.direction, journey.routes ?? journey.route) &&
             timestamp(other.attributes.arrival_time) >= timestamp(departure),
         );
 
@@ -92,6 +92,7 @@ export function journeyTrains(document, journey, now = Date.now()) {
         return {
           id: item.id,
           trip,
+          route: relation(item, "route"),
           headsign:
             item.attributes.trip_headsign ||
             trips.get(trip)?.headsign ||
@@ -129,7 +130,7 @@ export function journeyVehicles(document, journey, now = Date.now(), includeLast
       const updated = timestamp(item.attributes.updated_at);
       const trip = trips.get(relation(item, "trip"));
       return (
-        relation(item, "route") === "Green-B" &&
+        (journey.routes ?? [journey.route ?? "Green-B"]).includes(relation(item, "route")) &&
         item.attributes.direction_id === journey.direction &&
         item.attributes.current_status === "STOPPED_AT" &&
         item.attributes.revenue_status !== "NON_REVENUE" &&

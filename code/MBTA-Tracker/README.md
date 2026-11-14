@@ -18,6 +18,49 @@ This app is built by Next.js with React.
 - **Docker with Docker Compose v2 (optional)** — Required only for the containerized setup defined by `Dockerfile` and `docker-compose.yml`.
 
 ## Getting Started
+
+The planner searches all stations in the saved rapid-transit map: Red (both
+branches), Orange, Blue, Green B/C/D/E, Mattapan, and Silver Line SL1/SL2/SL3/SL4/SL5/SLW.
+Type a station name in any stop field; exact and prefix matches appear first.
+Use the arrow keys and Enter to select, or click a result or any map station.
+The outlined, white route badges identify every line or branch serving a station.
+Shared-track segments include departures from all eligible branches in one panel;
+branch-specific destinations remain restricted to trains on the required branch.
+
+Journeys prefer fewer transfers, then fewer stops, using directed MBTA canonical
+patterns. A direct ride has one full-width arrivals panel; transfer journeys have
+separate, independently scrollable panels for each boarding station. Later-leg
+departures are upcoming times at that station, not guaranteed connections from
+the first train. SL4 at South Station and SL5 at Boylston use explicitly labeled
+street-level walking transfers; these are not in-station or guaranteed connections.
+Predictions, schedules, observations, and stale data remain
+distinctly labeled. When an active MBTA suspension, no-service, or shuttle alert
+blocks a leg, that panel shows a "Suspended" badge and the alert text instead of
+a generic "no departures" message; legs outside the suspended section are unaffected.
+The map topology is saved locally; service changes and
+disruptions must be checked against live alerts. Refresh the topology with
+`node scripts/update-subway-network.mjs` when MBTA patterns change.
+
+### Multi-stop itineraries and leave times
+
+Add up to five stops (A–E). Each stop except the final one has a "Leave at"
+time: an empty first time means now, and an empty later time means "after the
+previous stop". Times more than 30 minutes in the past roll over to tomorrow
+(shown as "+1"). When a time is committed (blur, Enter, or ×), stops are
+re-sorted chronologically; an untimed stop moves together with the stop before
+it, and the final stop always stays last. Results show one tab per segment
+(A → B, B → C, …); only the selected tab loads MBTA data. Leave times within
+30 minutes filter live predictions; later times use the MBTA timetable and
+alerts active at that time, chaining transfer legs from the previous leg's
+scheduled arrival. Countdown and departure times use the train's line color.
+
+The homepage uses `/api/journey-snapshot?origin=...&destination=...[&time=epochMs]`
+for the selected segment only. With `time` (now − 5 minutes to now + 8 days), it
+returns timetable schedules and alerts for that time instead of live predictions.
+Existing B-branch API endpoints and the B test page remain available.
+Run pure-data tests in PowerShell with
+`node --test (Get-ChildItem tests\*.test.mjs).FullName` and lint with `npm run lint`.
+
 ### Run in the console
 If you want to run it on your local machine with console, follow the steps below.
 1. First, run the development server:

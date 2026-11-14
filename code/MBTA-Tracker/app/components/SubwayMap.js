@@ -1,8 +1,8 @@
 /*
  * AI-ASSISTED
- * Tool: OpenAI Codex
+ * Tool: OpenAI Codex; GitHub Copilot
  * Model: Exact model not recorded
- * Prompt Summary: Build an interactive subway map with Green B journeys between Government Center and Boston College.
+ * Prompt Summary: Build an interactive subway map with journeys across all lines (originally Green B) and line-colored stop markers.
  * AI Contribution: (~90%)
  * Estimate basis: Owner assessment, not measured code authorship.
  */
@@ -39,11 +39,10 @@ const transfers = new Set(
 const initialView = fitPoints(allPoints, 1.4, 100);
 
 export default function SubwayMap({
-  network: bNetwork,
+  network: plannerNetwork,
   journey,
-  origin,
-  destination,
-  activeField,
+  markers = {},
+  activeLetter = "A",
   onPick,
 }) {
   const viewport = useRef(null),
@@ -58,8 +57,19 @@ export default function SubwayMap({
   const [size, setSize] = useState({ width: 1000, height: 715 });
   const [overview, setOverview] = useState(true);
   const [labelWidths, setLabelWidths] = useState({});
-  const bStops = new Set(bNetwork?.stops.map((stop) => stop.id) ?? []);
+  const selectableStops = new Set(plannerNetwork?.stops.map((stop) => stop.id) ?? []);
   const selected = new Set(journey?.stops.map((stop) => stop.id) ?? []);
+  const journeyLegs = journey ? journey.legs ?? [journey] : [];
+  // Each stop takes the color of the line boarded there; the final stop keeps its arriving line.
+  const stopColors = {};
+  for (const arriving of [false, true]) {
+    for (const leg of journeyLegs) {
+      const last = leg.stops.length - 1;
+      leg.stops.forEach((stop, index) => {
+        if ((index === last) === arriving) stopColors[stop.id] ??= routeById[leg.route ?? "Green-B"].color;
+      });
+    }
+  }
   const journeyIds = journey?.stops.map((stop) => stop.id).join(",") ?? "";
   const focused = Boolean(journey && !overview);
   const unit = view.width / size.width;
@@ -181,35 +191,40 @@ export default function SubwayMap({
     const widths = {};
 
     for (const station of Object.values(network.stations))
-      for (const prefix of ["", "A · ", "B · "]) {
-        context.font = `${prefix ? 700 : 450} 12px Arial`;
-        widths[prefix + station.name] =
-          Math.ceil(context.measureText(prefix + station.name).width) + 4;
+      for (const weight of [450, 700]) {
+        context.font = `${weight} 12px Arial`;
+        widths[`${weight}:${station.name}`] = context.measureText(station.name).width;
       }
+
+    context.font = "700 12px Arial";
+    for (const text of [..."ABCDE/", " · "])
+      widths[`700:${text}`] = context.measureText(text).width;
 
     const pending = requestAnimationFrame(() => setLabelWidths(widths));
 
     return () => cancelAnimationFrame(pending);
   }, []);
 
-  const labelText = (station) => {
-    const prefix =
-      station.id === origin ? "A · " : station.id === destination ? "B · " : "";
+  const labelText = (station) =>
+    markers[station.id] ? `${markers[station.id]} · ${station.name}` : station.name;
 
-    return prefix + station.name;
+  const labelWidth = (station) => {
+    const marker = markers[station.id];
+    const parts = marker ? [...marker, " · ", station.name] : [station.name];
+    const width = parts.reduce((sum, part) => sum + (labelWidths[`${marker ? 700 : 450}:${part}`] ?? NaN), 0);
+    return Number.isFinite(width) ? Math.ceil(width) + 4 : undefined;
   };
 
   const labelCandidates = Object.values(network.stations).filter(
     (station) =>
       selected.has(station.id) ||
-      station.id === origin ||
-      station.id === destination ||
+      markers[station.id] ||
       (!focused &&
         (unit < 1.3 || terminals.has(station.id) || transfers.has(station.id))),
   );
 
   const priority = (station) =>
-    station.id === origin || station.id === destination
+    markers[station.id]
       ? 0
       : selected.has(station.id)
         ? 1
@@ -224,7 +239,7 @@ export default function SubwayMap({
       id: station.id,
       point: points[station.id],
       text: labelText(station),
-      width: labelWidths[labelText(station)],
+      width: labelWidth(station),
       important: priority(station) <= 1,
     })),
     focused ? journey.stops.map((stop) => points[stop.id]).filter(Boolean) : allPoints,
@@ -308,7 +323,7 @@ export default function SubwayMap({
       <div className={styles.toolbar}>
         <div>
           <h1>Boston subway map</h1>
-          <p>Select B-branch stops. Other lines are map context only.</p>
+          <p>Select any station to plan a direct or transfer journey.</p>
         </div>
         <div className={styles.controls}>
           <button onClick={reset}>Full map</button>
@@ -329,7 +344,7 @@ export default function SubwayMap({
           viewBox={`${view.x} ${view.y} ${view.width} ${view.height}`}
           className={styles.map}
           role="group"
-          aria-label="Subway schematic. Only B-branch stations can be selected."
+          aria-label="Subway schematic. Select any station as a stop on your itinerary."
           tabIndex={0}
           aria-describedby="map-instructions"
           onKeyDown={keyboard}
@@ -367,27 +382,29 @@ export default function SubwayMap({
               opacity={focused ? 0.7 : 1}
             />
           ))}
-          {focused && (
+          {focused && journeyLegs.map((leg, index) => (
             <path
+              key={`${leg.route}-${index}`}
               data-testid="selected-journey"
               d={roundedPath(
-                journey.stops.map((stop) => points[stop.id]).filter(Boolean),
+                leg.stops.map((stop) => points[stop.id]).filter(Boolean),
               )}
               fill="none"
-              stroke="#00843d"
+              stroke={routeById[leg.route ?? "Green-B"].color}
               strokeWidth={6}
               vectorEffect="non-scaling-stroke"
               strokeLinecap="round"
             />
-          )}
+          ))}
           {Object.values(network.stations).map((station) => {
             const [x, y] = points[station.id],
-              selectable = bStops.has(station.id);
+              selectable = selectableStops.has(station.id);
 
-            const endpoint = station.id === origin || station.id === destination;
+            const endpoint = Boolean(markers[station.id]);
 
             const active = selected.has(station.id),
-              transfer = transfers.has(station.id);
+              transfer = transfers.has(station.id),
+              stopColor = stopColors[station.id] ?? routeById[station.routes[0]].color;
 
             const label = labelPositions.get(station.id);
 
@@ -399,7 +416,7 @@ export default function SubwayMap({
                 tabIndex={selectable ? 0 : undefined}
                 aria-label={
                   selectable
-                    ? `Set ${activeField === "origin" ? "starting stop" : "destination"} to ${station.name}`
+                    ? `Set stop ${activeLetter} to ${station.name}`
                     : undefined
                 }
                 className={selectable ? styles.selectable : undefined}
@@ -424,7 +441,7 @@ export default function SubwayMap({
               >
                 <title>
                   {station.name +
-                    (selectable ? " — B-branch stop" : " — map context only")}
+                    (selectable ? " — select station" : " — map context only")}
                 </title>
                 {label?.leader && (
                   <line
@@ -447,7 +464,7 @@ export default function SubwayMap({
                     className={styles.target}
                   />
                 )}
-                {endpoint && <circle cx={x} cy={y} r={10 * unit} fill="#00843d" />}
+                {endpoint && <circle cx={x} cy={y} r={10 * unit} fill={stopColor} data-stop-ring={station.id} />}
                 <circle
                   cx={x}
                   cy={y}
@@ -461,7 +478,7 @@ export default function SubwayMap({
                   }
                   stroke={
                     active
-                      ? "#00843d"
+                      ? stopColor
                       : transfer
                         ? focused
                           ? "#92999e"
@@ -494,8 +511,8 @@ export default function SubwayMap({
           Drag to pan · Zoom for station names · Arrow keys to pan · 0 resets
         </p>
         <p>
-          Pick {activeField === "origin" ? "starting stop (A)" : "destination (B)"} on
-          the B branch, or use the <a href="#journey-planner">planner</a>.
+          Pick stop {activeLetter} on
+          the map, or search in the <a href="#journey-planner">planner</a>.
         </p>
         <div className={styles.legend}>
           {[
@@ -511,9 +528,9 @@ export default function SubwayMap({
             </span>
           ))}
         </div>
-        {bNetwork?.stops.some((stop) => !points[stop.id]) && (
+        {plannerNetwork?.stops.some((stop) => !points[stop.id]) && (
           <p role="status">
-            New B stops are available in the planner; their map positions need updating.
+            New stations are available in the planner; their map positions need updating.
           </p>
         )}
       </div>

@@ -21,6 +21,29 @@ export function upcomingTrains(document, direction, now) {
 export function journeyAlerts(document, journey) {
   const ids = new Set(journey.stops.flatMap((stop) => [stop.id, ...stop.platforms]));
   return (document.data ?? []).filter((alert) => (alert.attributes.informed_entity ?? []).some((entity) =>
-    (!entity.route || entity.route === "Green-B") && (entity.direction_id == null || entity.direction_id === journey.direction) && (!entity.stop || ids.has(entity.stop))
+    (!entity.route || (journey.routes ?? [journey.route ?? "Green-B"]).includes(entity.route)) && (entity.direction_id == null || entity.direction_id === journey.direction) && (!entity.stop || ids.has(entity.stop))
   ));
 }
+
+const NO_TRAINS = new Set(["SUSPENSION", "NO_SERVICE", "SHUTTLE"]);
+const activePeriod = ({ attributes }, now) => {
+  const periods = attributes.active_period ?? [];
+  return periods.length ? periods.find(({ start, end }) => (!start || Date.parse(start) <= now) && (!end || Date.parse(end) > now)) : {};
+};
+// A suspension only blocks a leg when it covers two consecutive stops of every route that could serve it,
+// so a leg that ends where the suspended section begins (Boston College to Babcock St) stays usable.
+export function suspensionAlerts(alerts, journey, now = Date.now()) {
+  const routes = journey.routes ?? [journey.route ?? "Green-B"];
+  const stopIds = journey.stops.map((stop) => new Set([stop.id, ...stop.platforms]));
+  return alerts.filter((alert) => {
+    if (!NO_TRAINS.has(alert.attributes.effect) || !activePeriod(alert, now)) return false;
+    return routes.every((route) => {
+      const entities = (alert.attributes.informed_entity ?? []).filter((entity) =>
+        entity.route === route && entity.trip == null && (entity.direction_id == null || entity.direction_id === journey.direction));
+      if (entities.some((entity) => !entity.stop)) return true;
+      const covered = stopIds.map((ids) => entities.some((entity) => ids.has(entity.stop)));
+      return covered.some((hit, index) => hit && covered[index + 1]);
+    });
+  });
+}
+export const suspensionEnd = (alert, now = Date.now()) => activePeriod(alert, now)?.end ?? null;
