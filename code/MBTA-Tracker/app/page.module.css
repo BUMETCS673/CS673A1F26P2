@@ -1021,3 +1021,38 @@
     font-size: 11px;
   }
 }
+
+/* Route History UI refinements: multi-stop readability and default status */
+
+.historyRow .routeChoice {
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.55;
+}
+
+.historyRow .routeChoice span:first-child {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.historyRow:has(.defaultButtonActive) {
+  background: #f5fbf6;
+  border-left: 3px solid #07813c;
+  padding-left: 6px;
+}
+
+.historyRow .defaultButtonActive {
+  background: #e5f5e9;
+  border: 1px solid #07813c;
+  color: #056b33;
+  font-weight: 800;
+}
+
+.historyRow .defaultButtonActive:focus-visible,
+.historyRow .routeChoice:focus-visible {
+  outline: 2px solid #07813c;
+  outline-offset: 2px;
+}

@@ -4,10 +4,11 @@
  * Tool: ChatGPT (OpenAI)
  * Model: GPT-6
  * Prompt Summary: Implement cookie-based favorite routes,
- * recent searches, persistent default routes, and deletion.
+ * recent searches, persistent default routes, deletion,
+ * and multi-stop route support with legacy compatibility.
  * AI Contribution: Used as a reference for code examples,
  * troubleshooting, and testing suggestions. Suggestions
- * were reviewed, adapted, and manually tested.
+ * were reviewed and adapted for the project.
  */
 
 const FAVORITES_COOKIE = "mbta_favorite_routes";
@@ -16,10 +17,11 @@ const DEFAULT_ROUTE_COOKIE = "mbta_default_route";
 
 const MAX_FAVORITES = 10;
 const MAX_RECENTS = 10;
+const MAX_STOPS = 5;
 
 const FAVORITES_DAYS = 90;
 const RECENTS_DAYS = 30;
-const DEFAULT_ROUTE_DAYS = 365;
+const DEFAULT_ROUTE_DAYS = 90;
 
 // Cookie helpers
 
@@ -59,37 +61,119 @@ function deleteCookie(name) {
     `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
 }
 
-function isValidRoute(origin, destination) {
+// Route helpers
+
+function normalizeStops(origin, destination, stops) {
+  let values;
+
+  if (Array.isArray(origin)) {
+    values = origin;
+  } else if (Array.isArray(stops)) {
+    values = stops;
+  } else {
+    values = [origin, destination];
+  }
+
+  if (
+    values.length < 2 ||
+    values.length > MAX_STOPS ||
+    values.some(
+      (stop) =>
+        typeof stop !== "string" ||
+        stop.trim().length === 0
+    )
+  ) {
+    return null;
+  }
+
+  const normalized = values.map((stop) => stop.trim());
+
+  if (
+    new Set(normalized.map((stop) => stop.toLowerCase()))
+      .size !== normalized.length
+  ) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function makeRoute(origin, destination, stops) {
+  const normalized = normalizeStops(
+    origin,
+    destination,
+    stops
+  );
+
+  if (!normalized) return null;
+
+  return {
+    origin: normalized[0],
+    destination: normalized[normalized.length - 1],
+    stops: normalized,
+  };
+}
+
+function normalizeStoredRoute(route) {
+  if (!route || typeof route !== "object") return null;
+
+  if (Array.isArray(route.stops)) {
+    const normalized = makeRoute(route.stops);
+
+    if (!normalized) return null;
+
+    if (
+      route.origin !== normalized.origin ||
+      route.destination !== normalized.destination
+    ) {
+      return null;
+    }
+
+    return normalized;
+  }
+
+  return makeRoute(route.origin, route.destination);
+}
+
+function readRoutes(cookieName) {
+  const stored = readCookie(cookieName);
+
+  if (!Array.isArray(stored)) return [];
+
+  return stored
+    .map(normalizeStoredRoute)
+    .filter(Boolean);
+}
+
+function sameRoute(first, second) {
+  if (!first || !second) return false;
+
   return (
-    typeof origin === "string" &&
-    typeof destination === "string" &&
-    origin.length > 0 &&
-    destination.length > 0 &&
-    origin !== destination
+    first.stops.length === second.stops.length &&
+    first.stops.every(
+      (stop, index) =>
+        stop.toLowerCase() ===
+        second.stops[index].toLowerCase()
+    )
   );
 }
 
 // Favorite Routes
 
 export function getFavoriteRoutes() {
-  const routes = readCookie(FAVORITES_COOKIE);
-  return Array.isArray(routes) ? routes : [];
+  return readRoutes(FAVORITES_COOKIE);
 }
 
-export function addFavoriteRoute(origin, destination) {
-  if (!isValidRoute(origin, destination)) {
+export function addFavoriteRoute(origin, destination, stops) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) {
     return { success: false, reason: "invalid" };
   }
 
   const routes = getFavoriteRoutes();
 
-  if (
-    routes.some(
-      (route) =>
-        route.origin === origin &&
-        route.destination === destination
-    )
-  ) {
+  if (routes.some((item) => sameRoute(item, route))) {
     return { success: false, reason: "duplicate" };
   }
 
@@ -97,31 +181,31 @@ export function addFavoriteRoute(origin, destination) {
     return { success: false, reason: "limit" };
   }
 
-  const updated = [...routes, { origin, destination }];
+  const updated = [...routes, route];
 
   writeCookie(FAVORITES_COOKIE, updated, FAVORITES_DAYS);
 
   return { success: true, routes: updated };
 }
 
-export function removeFavoriteRoute(origin, destination) {
+export function removeFavoriteRoute(
+  origin,
+  destination,
+  stops
+) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) return getFavoriteRoutes();
+
   const updated = getFavoriteRoutes().filter(
-    (route) =>
-      !(
-        route.origin === origin &&
-        route.destination === destination
-      )
+    (item) => !sameRoute(item, route)
   );
 
   writeCookie(FAVORITES_COOKIE, updated, FAVORITES_DAYS);
 
   const currentDefault = getDefaultRoute();
 
-  if (
-    currentDefault &&
-    currentDefault.origin === origin &&
-    currentDefault.destination === destination
-  ) {
+  if (sameRoute(currentDefault, route)) {
     clearDefaultRoute();
   }
 
@@ -134,34 +218,41 @@ export function clearFavoriteRoutes() {
   return [];
 }
 
-export function isFavoriteRoute(origin, destination) {
+export function isFavoriteRoute(
+  origin,
+  destination,
+  stops
+) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) return false;
+
   return getFavoriteRoutes().some(
-    (route) =>
-      route.origin === origin &&
-      route.destination === destination
+    (item) => sameRoute(item, route)
   );
 }
 
 // Recent Searches
 
 export function getRecentRoutes() {
-  const routes = readCookie(RECENTS_COOKIE);
-  return Array.isArray(routes) ? routes : [];
+  return readRoutes(RECENTS_COOKIE);
 }
 
-export function addRecentRoute(origin, destination) {
-  if (!isValidRoute(origin, destination)) return [];
+export function addRecentRoute(
+  origin,
+  destination,
+  stops
+) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) return getRecentRoutes();
 
   const withoutDuplicate = getRecentRoutes().filter(
-    (route) =>
-      !(
-        route.origin === origin &&
-        route.destination === destination
-      )
+    (item) => !sameRoute(item, route)
   );
 
   const updated = [
-    { origin, destination },
+    route,
     ...withoutDuplicate,
   ].slice(0, MAX_RECENTS);
 
@@ -170,13 +261,17 @@ export function addRecentRoute(origin, destination) {
   return updated;
 }
 
-export function removeRecentRoute(origin, destination) {
+export function removeRecentRoute(
+  origin,
+  destination,
+  stops
+) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) return getRecentRoutes();
+
   const updated = getRecentRoutes().filter(
-    (route) =>
-      !(
-        route.origin === origin &&
-        route.destination === destination
-      )
+    (item) => !sameRoute(item, route)
   );
 
   writeCookie(RECENTS_COOKIE, updated, RECENTS_DAYS);
@@ -192,36 +287,63 @@ export function clearRecentRoutes() {
 // Default Route
 
 export function getDefaultRoute() {
-  const route = readCookie(DEFAULT_ROUTE_COOKIE);
+  const stored = readCookie(DEFAULT_ROUTE_COOKIE);
+  const route = normalizeStoredRoute(stored);
 
-  if (
-    !route ||
-    !isValidRoute(route.origin, route.destination)
-  ) {
-    return null;
-  }
+  if (!route) return null;
 
-  if (!isFavoriteRoute(route.origin, route.destination)) {
+  const favorite = getFavoriteRoutes().find(
+    (item) => sameRoute(item, route)
+  );
+
+  if (!favorite) {
     clearDefaultRoute();
     return null;
   }
 
-  return {
-    origin: route.origin,
-    destination: route.destination,
-  };
+  return favorite;
 }
 
-export function setDefaultRoute(origin, destination) {
-  if (!isValidRoute(origin, destination)) {
+export function renewDefaultRoute() {
+  const route = getDefaultRoute();
+
+  if (!route) return false;
+
+  const favorites = getFavoriteRoutes();
+
+  writeCookie(
+    FAVORITES_COOKIE,
+    favorites,
+    FAVORITES_DAYS
+  );
+
+  writeCookie(
+    DEFAULT_ROUTE_COOKIE,
+    route,
+    DEFAULT_ROUTE_DAYS
+  );
+
+  return true;
+}
+
+export function setDefaultRoute(
+  origin,
+  destination,
+  stops
+) {
+  const route = makeRoute(origin, destination, stops);
+
+  if (!route) {
     return { success: false, reason: "invalid" };
   }
 
-  if (!isFavoriteRoute(origin, destination)) {
+  if (
+    !getFavoriteRoutes().some(
+      (item) => sameRoute(item, route)
+    )
+  ) {
     return { success: false, reason: "not-favorite" };
   }
-
-  const route = { origin, destination };
 
   writeCookie(
     DEFAULT_ROUTE_COOKIE,

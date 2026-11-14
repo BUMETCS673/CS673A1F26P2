@@ -23,7 +23,7 @@ import SubwayMap from "./components/SubwayMap";
 import StationWeather from "./components/StationWeather";
 import { journeyWeatherTiming } from "@/lib/journey-timing.mjs";
 import RouteHistory from "./components/RouteHistory";
-import { getDefaultRoute } from "@/lib/route-cookies.mjs";
+import { getDefaultRoute, renewDefaultRoute } from "@/lib/route-cookies.mjs";
 import styles from "./page.module.css";
 
 const transitNetwork = plannerNetwork(source);
@@ -565,8 +565,42 @@ export default function Home() {
     Promise.resolve().then(() => {
       if (!active) return;
       const route = getDefaultRoute();
-      if (route && findTransitJourney(transitNetwork, route.origin, route.destination)) {
-        setStops([{ key: 1, station: route.origin, time: "" }, { key: 2, station: route.destination, time: "" }]);
+
+      if (route) {
+        const savedStops = Array.isArray(route.stops)
+          ? route.stops
+          : [route.origin, route.destination];
+
+        const validRoute =
+          savedStops.length >= 2 &&
+          savedStops.length <= MAX_STOPS &&
+          savedStops.every((station) =>
+            transitNetwork.stops.some((stop) => stop.id === station)
+          ) &&
+          savedStops.slice(0, -1).every((station, index) =>
+            findTransitJourney(
+              transitNetwork,
+              station,
+              savedStops[index + 1]
+            )
+          );
+
+        if (validRoute) {
+          setStops(
+            savedStops.map((station, index) => ({
+              key: index + 1,
+              station,
+              time: "",
+            }))
+          );
+
+          nextStopKey = Math.max(
+            nextStopKey,
+            savedStops.length + 1
+          );
+
+          renewDefaultRoute();
+        }
       }
     });
     return () => { active = false; };
@@ -741,11 +775,48 @@ export default function Home() {
             </button>
           </div>
           <p role="status" className={styles.sortNotice}>{reorder ? "Stops re-ordered to follow your leave times." : ""}</p>
-          <RouteHistory origin={segment.from} destination={segment.to} valid={Boolean(segment.journey)}
-            stations={transitNetwork.stops} onChoose={(route) => {
-              setStops([{ key: nextStopKey++, station: route.origin, time: "" }, { key: nextStopKey++, station: route.destination, time: "" }]);
-              setActiveTab(0); setActiveStop(0); setReorder(null);
-            }} />
+
+<RouteHistory
+  origin={stops[0].station}
+  destination={stops[last].station}
+  stops={stops.map((stop) => stop.station)}
+  valid={segments.every((item) => Boolean(item.journey))}
+  stations={transitNetwork.stops}
+  onChoose={(route) => {
+    const savedStops = Array.isArray(route.stops)
+      ? route.stops
+      : [route.origin, route.destination];
+
+    const validRoute =
+      savedStops.length >= 2 &&
+      savedStops.length <= MAX_STOPS &&
+      savedStops.every((station) =>
+        transitNetwork.stops.some((stop) => stop.id === station)
+      ) &&
+      savedStops.slice(0, -1).every((station, index) =>
+        findTransitJourney(
+          transitNetwork,
+          station,
+          savedStops[index + 1]
+        )
+      );
+
+    if (!validRoute) return;
+
+    setStops(
+      savedStops.map((station) => ({
+        key: nextStopKey++,
+        station,
+        time: "",
+      }))
+    );
+
+    setActiveTab(0);
+    setActiveStop(0);
+    setReorder(null);
+  }}
+/>
+
           <div className={styles.resultsArea}>
             {segments.length > 1 && (
               <div role="tablist" aria-label="Trip segments" className={styles.segmentTabs} onKeyDown={tabKeys}>

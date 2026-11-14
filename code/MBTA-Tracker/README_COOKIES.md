@@ -9,78 +9,89 @@
 
 ## Overview
 
-This feature improves the MBTA Journey Planner by allowing users to save favorite routes, access recent searches, and set a persistent default route using browser cookies. It reduces repetitive route selection and improves the user experience.
+The Cookies feature lets users save favorite routes, revisit recent searches, and choose a default route in the MBTA Journey Planner. Route preferences are stored locally in browser cookies and can be reused across page visits.
+
+The implementation supports itineraries containing **2 to 5 stations**, including intermediate stops. Existing two-station saved routes remain supported.
 
 ## Features
 
 ### Favorite Routes
-- Save up to 10 favorite routes.
-- View, reuse, and delete saved routes.
-- Prevent duplicates and display a warning when the limit is reached.
-- Store favorites for up to 90 days.
+
+- Save up to **10** favorite routes, each containing 2–5 stations.
+- Reuse saved routes, remove individual favorites, or clear all favorites after confirmation.
+- Reject invalid routes, including blank station names and repeated stations within a route.
+- Prevent duplicate favorites and show a message when the 10-route limit is reached.
+- Keep favorite routes in a browser cookie with a **90-day** expiration period.
+- Removing a favorite that is also the default route clears the default selection.
 
 ### Recent Searches
-- Automatically save up to 10 recent searches.
-- Display the most recent searches first.
-- Prevent duplicates and remove the oldest entries when necessary.
-- Delete individual records or clear all search history.
-- Store recent searches for up to 30 days.
+
+- Automatically record valid selected routes after a short delay (500 ms), avoiding partial edits.
+- Keep up to **10** recent routes, with the newest first.
+- Move a previously recorded route to the top instead of storing a duplicate.
+- Reuse or delete individual recent routes, or clear the entire recent list after confirmation.
+- Keep recent searches in a browser cookie with a **30-day** expiration period.
 
 ### Persistent Default Route
-- Set one favorite route as the default.
-- Automatically restore the starting and destination stations when the page loads.
-- Change or cancel the default route.
-- Automatically clear the default when its favorite route is deleted.
-- Store the default route for up to 365 days.
+
+- Set **one saved favorite** as the default route; setting another replaces the previous default.
+- Cancel the default manually or remove its corresponding favorite to clear it.
+- Restore the complete saved itinerary, including intermediate stations, when the planner loads and the saved stations are valid.
+- Use the planner's normal route-results behavior after restoration; cookie data does not cache live train predictions.
+- Store the default route in a browser cookie with a **90-day** expiration period.
+- After a valid default route is successfully restored, renew the **default-route and favorites cookies** for another 90 days. This renewal does not apply to recent-search history.
 
 ## Implementation
 
-**Technologies:** Next.js, JavaScript, CSS Modules, and browser cookies.
+**Technologies:** Next.js, React, JavaScript, CSS Modules, and browser cookies.
 
 **Main Files:**
-- `lib/route-cookies.mjs` — Cookie storage and route management.
-- `app/page.js` — Feature integration and user interactions.
-- `app/page.module.css` — Interface styling.
+
+- `lib/route-cookies.mjs` — Cookie reading/writing, route validation, favorites, recents, default-route management, and renewal.
+- `app/components/RouteHistory.js` — Favorites/Recent Searches interface, default-route controls, and clear-confirmation dialogs.
+- `app/page.js` — Planner integration, saved-route selection, default-route restoration, and renewal after successful restoration.
+- `app/page.module.css` — Route-history and planner interface styles, including multi-line station names and default-route highlighting.
+
+Saved route data contains the ordered station selections, **not departure times or cached train results**. Cookie storage is browser-local and is not synchronized across devices.
 
 ## Testing
 
-The following functionality was manually tested:
+The feature should be checked in the browser for:
 
-- Saving, deleting, and restoring favorite routes.
-- Managing recent searches and preventing duplicates.
-- Enforcing the 10-route storage limits.
-- Setting, switching, and clearing default routes.
-- Preserving saved preferences after page refresh.
+- Adding, selecting, and deleting 2–5-station favorite routes.
+- Rejecting invalid and duplicate favorites and enforcing the 10-route limit.
+- Recording recent routes, moving repeated selections to the top, and enforcing the 10-route limit.
+- Setting, changing, canceling, and restoring a default route after a page reload.
+- Clearing favorites or recent searches through the confirmation dialog, including canceling the dialog without deleting data.
+- Confirming that clearing favorites also clears any default route while leaving recent searches intact.
+- Checking that saved routes persist across reloads while their cookies remain valid.
 
-**Code Validation:**
-
-Both commands completed successfully:
+**Local validation commands:**
 
 ```bash
-npm run lint
+npm install
+npx eslint app/components/RouteHistory.js app/page.js lib/route-cookies.mjs
 npm run build
 ```
 
+Run the project's existing automated tests using the commands documented in the main project README. A successful build and lint run should be confirmed on the final working branch before submission.
+
 ## AI Usage
 
-ChatGPT was used as a reference for code examples, troubleshooting, and testing suggestions during development. The suggestions were reviewed, adapted, and tested to ensure the functionality worked as expected.
+ChatGPT was used to assist with code examples, troubleshooting, documentation, and testing suggestions. Generated suggestions were reviewed and adapted to the project requirements; validation results should be reported based on actual runs.
 
 ## Run Locally
-
-Install dependencies and start the development server:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser.
+Open the local URL displayed by Next.js (typically `http://localhost:3000`; another port may be used if 3000 is occupied).
 
 ## Notes
 
-- Route preferences are stored locally in browser cookies.
-- Clearing browser cookies may remove saved preferences.
-- The default route restores station selections without automatically performing a search.
-
-## Local dev integration
-On the multi-stop planner, favorites and history store the selected segment as a station pair, without leave times. Selecting a saved pair replaces the current itinerary. A valid default pair restores on load and uses dev's automatic results. Weather and all-line routing remain enabled. Recent selections are recorded after a short delay to avoid partial edits.
+- Cookie expiration is not the same as guaranteed retention: browser settings, manual cookie deletion, or private browsing can remove saved data earlier.
+- A default route must still exist in Favorites to be restored.
+- Saved station selections are restored; current route results are obtained through the planner rather than stored in cookies.
+- Weather, map, and train-results features remain separate from cookie persistence.
