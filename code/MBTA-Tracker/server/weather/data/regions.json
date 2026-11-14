@@ -1,0 +1,512 @@
+{
+  "gridSizeMeters": 2500,
+  "projection": "EPSG:32619",
+  "sourceMappingGeneratedAt": "2026-11-11T01:01:38.495Z",
+  "splitConfiguration": "Logan Airport–Seaport",
+  "regions": [
+    {
+      "id": "utm19n-2500m-125-1875",
+      "representativeStationId": "place-river",
+      "requestedCoordinates": {
+        "latitude": 42.337352,
+        "longitude": -71.252685
+      },
+      "stationIds": [
+        "place-river"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-126-1875",
+      "representativeStationId": "place-waban",
+      "requestedCoordinates": {
+        "latitude": 42.325845,
+        "longitude": -71.230609
+      },
+      "stationIds": [
+        "place-eliot",
+        "place-waban",
+        "place-woodl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-127-1875",
+      "representativeStationId": "place-newto",
+      "requestedCoordinates": {
+        "latitude": 42.329443,
+        "longitude": -71.192414
+      },
+      "stationIds": [
+        "place-newtn",
+        "place-newto"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-128-1875",
+      "representativeStationId": "place-lake",
+      "requestedCoordinates": {
+        "latitude": 42.340081,
+        "longitude": -71.166769
+      },
+      "stationIds": [
+        "place-chhil",
+        "place-lake",
+        "place-sougr"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-129-1875",
+      "representativeStationId": "place-tapst",
+      "requestedCoordinates": {
+        "latitude": 42.338459,
+        "longitude": -71.138702
+      },
+      "stationIds": [
+        "place-bcnfd",
+        "place-bcnwa",
+        "place-bndhl",
+        "place-brkhl",
+        "place-chill",
+        "place-chswk",
+        "place-clmnl",
+        "place-denrd",
+        "place-engav",
+        "place-fbkst",
+        "place-rsmnl",
+        "place-sthld",
+        "place-sumav",
+        "place-tapst"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-129-1876",
+      "representativeStationId": "place-grigg",
+      "requestedCoordinates": {
+        "latitude": 42.348545,
+        "longitude": -71.134949
+      },
+      "stationIds": [
+        "place-alsgr",
+        "place-brico",
+        "place-grigg",
+        "place-harvd",
+        "place-wascm",
+        "place-wrnst"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-129-1878",
+      "representativeStationId": "place-alfcl",
+      "requestedCoordinates": {
+        "latitude": 42.39583,
+        "longitude": -71.141287
+      },
+      "stationIds": [
+        "place-alfcl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-130-1874",
+      "representativeStationId": "place-grnst",
+      "requestedCoordinates": {
+        "latitude": 42.310525,
+        "longitude": -71.107414
+      },
+      "stationIds": [
+        "place-forhl",
+        "place-grnst",
+        "place-sbmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-130-1875",
+      "representativeStationId": "place-fenwd",
+      "requestedCoordinates": {
+        "latitude": 42.333706,
+        "longitude": -71.105728
+      },
+      "stationIds": [
+        "place-bckhl",
+        "place-brmnl",
+        "place-bvmnl",
+        "place-cool",
+        "place-fenwd",
+        "place-hsmnl",
+        "place-jaksn",
+        "place-lngmd",
+        "place-longw",
+        "place-mfa",
+        "place-mispk",
+        "place-rcmnl",
+        "place-rvrwy"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-130-1876",
+      "representativeStationId": "place-smary",
+      "requestedCoordinates": {
+        "latitude": 42.345974,
+        "longitude": -71.107353
+      },
+      "stationIds": [
+        "place-amory",
+        "place-babck",
+        "place-bland",
+        "place-bucen",
+        "place-buest",
+        "place-fenwy",
+        "place-hwsst",
+        "place-kencl",
+        "place-kntst",
+        "place-smary",
+        "place-stpul"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-130-1877",
+      "representativeStationId": "place-harsq",
+      "requestedCoordinates": {
+        "latitude": 42.373362,
+        "longitude": -71.118956
+      },
+      "stationIds": [
+        "place-cntsq",
+        "place-gilmn",
+        "place-harsq"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-130-1878",
+      "representativeStationId": "place-balsq",
+      "requestedCoordinates": {
+        "latitude": 42.399889,
+        "longitude": -71.111003
+      },
+      "stationIds": [
+        "place-balsq",
+        "place-davis",
+        "place-mdftf",
+        "place-mgngl",
+        "place-portr"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1873",
+      "representativeStationId": "place-asmnl",
+      "requestedCoordinates": {
+        "latitude": 42.28452,
+        "longitude": -71.063777
+      },
+      "stationIds": [
+        "place-asmnl",
+        "place-smmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1875",
+      "representativeStationId": "55",
+      "requestedCoordinates": {
+        "latitude": 42.336361,
+        "longitude": -71.077214
+      },
+      "stationIds": [
+        "15176",
+        "1787",
+        "1788",
+        "19402",
+        "3",
+        "4",
+        "5",
+        "5093",
+        "5100",
+        "55",
+        "60",
+        "61",
+        "place-masta",
+        "place-nubn",
+        "place-nuniv",
+        "place-rugg",
+        "place-symcl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1876",
+      "representativeStationId": "place-armnl",
+      "requestedCoordinates": {
+        "latitude": 42.351902,
+        "longitude": -71.070893
+      },
+      "stationIds": [
+        "15095",
+        "49003",
+        "5095",
+        "5098",
+        "8279",
+        "place-armnl",
+        "place-bbsta",
+        "place-boyls",
+        "place-chmnl",
+        "place-coecl",
+        "place-hymnl",
+        "place-knncl",
+        "place-prmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1877",
+      "representativeStationId": "place-lech",
+      "requestedCoordinates": {
+        "latitude": 42.371572,
+        "longitude": -71.076584
+      },
+      "stationIds": [
+        "place-ccmnl",
+        "place-esomr",
+        "place-lech",
+        "place-spmnl",
+        "place-sull",
+        "place-unsqu"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1878",
+      "representativeStationId": "place-astao",
+      "requestedCoordinates": {
+        "latitude": 42.392811,
+        "longitude": -71.077257
+      },
+      "stationIds": [
+        "place-astao",
+        "place-welln"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1879",
+      "representativeStationId": "place-mlmnl",
+      "requestedCoordinates": {
+        "latitude": 42.426632,
+        "longitude": -71.07411
+      },
+      "stationIds": [
+        "place-mlmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-131-1880",
+      "representativeStationId": "place-ogmnl",
+      "requestedCoordinates": {
+        "latitude": 42.43668,
+        "longitude": -71.071097
+      },
+      "stationIds": [
+        "place-ogmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-132-1874",
+      "representativeStationId": "place-shmnl",
+      "requestedCoordinates": {
+        "latitude": 42.31129,
+        "longitude": -71.053331
+      },
+      "stationIds": [
+        "place-fldcr",
+        "place-jfk",
+        "place-shmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-132-1875",
+      "representativeStationId": "place-brdwy",
+      "requestedCoordinates": {
+        "latitude": 42.342622,
+        "longitude": -71.056967
+      },
+      "stationIds": [
+        "place-andrw",
+        "place-brdwy"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-132-1876",
+      "representativeStationId": "place-sstat",
+      "requestedCoordinates": {
+        "latitude": 42.352271,
+        "longitude": -71.055242
+      },
+      "stationIds": [
+        "17096",
+        "247",
+        "31255",
+        "31256",
+        "49001",
+        "49002",
+        "6537",
+        "6538",
+        "6555",
+        "6565",
+        "6567",
+        "place-aqucl",
+        "place-bomnl",
+        "place-chncl",
+        "place-conrd",
+        "place-crtst",
+        "place-dwnxg",
+        "place-gover",
+        "place-haecl",
+        "place-north",
+        "place-pktrm",
+        "place-sstat",
+        "place-state",
+        "place-tumnl",
+        "place-wtcst"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-132-1877",
+      "representativeStationId": "place-mvbcl",
+      "requestedCoordinates": {
+        "latitude": 42.3691186,
+        "longitude": -71.0395296
+      },
+      "stationIds": [
+        "place-mvbcl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-132-1878",
+      "representativeStationId": "place-chels",
+      "requestedCoordinates": {
+        "latitude": 42.397024,
+        "longitude": -71.041314
+      },
+      "stationIds": [
+        "place-chels"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1869",
+      "representativeStationId": "place-brntn",
+      "requestedCoordinates": {
+        "latitude": 42.2078543,
+        "longitude": -71.0011385
+      },
+      "stationIds": [
+        "place-brntn"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1871",
+      "representativeStationId": "place-qamnl",
+      "requestedCoordinates": {
+        "latitude": 42.233391,
+        "longitude": -71.007153
+      },
+      "stationIds": [
+        "place-qamnl",
+        "place-qnctr"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1872",
+      "representativeStationId": "place-nqncy",
+      "requestedCoordinates": {
+        "latitude": 42.275275,
+        "longitude": -71.029583
+      },
+      "stationIds": [
+        "place-nqncy",
+        "place-wlsta"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1875",
+      "representativeStationId": "31259",
+      "requestedCoordinates": {
+        "latitude": 42.344232,
+        "longitude": -71.027213
+      },
+      "stationIds": [
+        "31259"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1876--logan-terminals",
+      "representativeStationId": "27092",
+      "requestedCoordinates": {
+        "latitude": 42.3621,
+        "longitude": -71.01882
+      },
+      "stationIds": [
+        "17091",
+        "17093",
+        "17094",
+        "27092"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1876--seaport-drydock",
+      "representativeStationId": "30250",
+      "requestedCoordinates": {
+        "latitude": 42.344649,
+        "longitude": -71.030268
+      },
+      "stationIds": [
+        "30249",
+        "30250",
+        "30251",
+        "31257"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1877",
+      "representativeStationId": "place-wimnl",
+      "requestedCoordinates": {
+        "latitude": 42.3796403,
+        "longitude": -71.0228654
+      },
+      "stationIds": [
+        "17095",
+        "place-aport",
+        "place-estav",
+        "place-orhte",
+        "place-wimnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-133-1878",
+      "representativeStationId": "place-boxdt",
+      "requestedCoordinates": {
+        "latitude": 42.394049,
+        "longitude": -71.028365
+      },
+      "stationIds": [
+        "place-belsq",
+        "place-boxdt"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-134-1878",
+      "representativeStationId": "place-bmmnl",
+      "requestedCoordinates": {
+        "latitude": 42.3975423,
+        "longitude": -70.9923194
+      },
+      "stationIds": [
+        "place-bmmnl",
+        "place-rbmnl",
+        "place-sdmnl"
+      ]
+    },
+    {
+      "id": "utm19n-2500m-134-1879",
+      "representativeStationId": "place-wondl",
+      "requestedCoordinates": {
+        "latitude": 42.41342,
+        "longitude": -70.991648
+      },
+      "stationIds": [
+        "place-wondl"
+      ]
+    }
+  ]
+}
