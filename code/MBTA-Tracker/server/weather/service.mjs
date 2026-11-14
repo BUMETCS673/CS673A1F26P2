@@ -1,3 +1,20 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Cache regional weather, refresh forecasts, and serve station weather by arrival time.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Manages weather refreshes and provides cached current conditions and forecasts.
+ *
+ * createWeatherService(): Builds an isolated weather service.
+ * getWeatherForStation(): Returns cached weather for a station.
+ * getForecastForStation(): Finds the forecast nearest a station arrival time.
+ * refreshWeatherCache(): Refreshes all regional weather batches.
+ * startWeatherRefresh(): Starts periodic refreshes.
+ * stopWeatherRefresh(): Stops periodic refreshes.
+ */
+
 import { WEATHER_CONFIG, estimateUsage, validateConfig } from "./config.mjs";
 import { loadRegions } from "./regions.mjs";
 import { createOpenMeteoClient } from "./open-meteo-client.mjs";

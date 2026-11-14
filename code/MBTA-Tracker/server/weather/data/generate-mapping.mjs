@@ -1,3 +1,13 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Generate the runtime weather-region mapping from reviewed station analysis.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Applies the reviewed region split and writes validated station assignments to regions.json.
+ */
+
 // Rebuild the checked-in runtime artifact from the reviewed analysis, without network access.
 import { readFile, writeFile } from "node:fs/promises";
 

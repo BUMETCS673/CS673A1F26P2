@@ -1,3 +1,16 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Add a development page to inspect and control the weather service.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Shows service status, station weather, forecasts, and regional cache data.
+ *
+ * WeatherTestPage(): Renders the development-only weather test page.
+ * controlWeather(): Starts, stops, or refreshes the shared weather service.
+ */
+
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import {

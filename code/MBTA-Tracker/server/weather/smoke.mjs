@@ -1,3 +1,13 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Check live Open-Meteo responses and forecast coverage for sample weather regions.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Runs an opt-in live request for two regions and reports forecast coverage.
+ */
+
 // Explicit opt-in live check: node server/weather/smoke.mjs
 import { WEATHER_CONFIG } from "./config.mjs";
 import { loadRegions } from "./regions.mjs";

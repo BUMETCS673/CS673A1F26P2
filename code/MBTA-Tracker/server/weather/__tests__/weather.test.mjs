@@ -1,3 +1,15 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Test weather mapping, Open-Meteo requests, normalization, caching, and forecasts.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Verifies the weather service with controlled provider responses and refresh behavior.
+ *
+ * response(): Builds a reusable Open-Meteo response fixture.
+ */
+
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

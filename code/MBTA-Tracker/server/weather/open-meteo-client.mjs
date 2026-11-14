@@ -1,3 +1,16 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Request batched Open-Meteo forecasts with timeout, retry, and rate-limit handling.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Builds forecast requests and fetches ordered weather responses from Open-Meteo.
+ *
+ * buildForecastUrl(): Creates a forecast URL for a batch of regions.
+ * createOpenMeteoClient(): Provides batch fetching, retry handling, and request statistics.
+ */
+
 import { WEATHER_CONFIG, forecastPointCounts, validateConfig } from "./config.mjs";
 
 /** Error with upstream status and optional retry time. */

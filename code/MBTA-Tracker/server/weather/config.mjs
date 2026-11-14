@@ -1,3 +1,17 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Configure the Open-Meteo weather service, forecast coverage, and API usage estimates.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Defines and validates the weather service settings and estimates request usage.
+ *
+ * validateConfig(): Checks configuration values and supported API options.
+ * forecastPointCounts(): Calculates the required forecast points.
+ * estimateUsage(): Estimates requests and weighted API calls.
+ */
+
 /** Operational configuration. Durations are milliseconds unless named otherwise. */
 export const WEATHER_CONFIG = Object.freeze({
   API_BASE_URL: "https://api.open-meteo.com/v1/forecast",

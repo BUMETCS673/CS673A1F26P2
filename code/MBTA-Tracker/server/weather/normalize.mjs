@@ -1,3 +1,16 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Validate and normalize Open-Meteo weather responses for the station forecast service.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Converts provider data into validated current weather and time-ordered forecasts.
+ *
+ * weatherCondition(): Maps a weather code to a readable condition.
+ * normalizeLocation(): Validates one location response and builds its weather record.
+ */
+
 const conditions = new Map([
   [0, "clear"], [1, "mostly_clear"], [2, "partly_cloudy"], [3, "overcast"],
   [45, "fog"], [48, "depositing_rime_fog"], [51, "light_drizzle"], [53, "drizzle"], [55, "dense_drizzle"],

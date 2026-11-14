@@ -1,3 +1,15 @@
+/*
+ * AI Tool Assist
+ * Tool: Codex and ChatGPT
+ * Prompt Summary: Load the reviewed station-to-weather-region mapping and validate its assignments.
+ * AI Contribution: (~75%)
+ *
+ * Description:
+ * Reads the local region mapping and verifies region coordinates and station coverage.
+ *
+ * loadRegions(): Returns validated regions and a station-to-region lookup.
+ */
+
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { WEATHER_CONFIG } from "./config.mjs";
