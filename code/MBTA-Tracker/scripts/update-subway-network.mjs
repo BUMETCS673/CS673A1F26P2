@@ -54,6 +54,7 @@ const included = new Map(
 const stations = {};
 
 const patterns = document.data
+  .filter((pattern) => routes.some((route) => route.id === pattern.relationships.route.data.id))
   .filter(
     (pattern) =>
       pattern.attributes.canonical ||
@@ -80,9 +81,11 @@ const patterns = document.data
         latitude: station.attributes.latitude,
         longitude: station.attributes.longitude,
         routes: [],
+        platforms: [],
       };
 
       if (!stations[id].routes.includes(route)) stations[id].routes.push(route);
+      if (!stations[id].platforms.includes(platform.id)) stations[id].platforms.push(platform.id);
 
       if (stops.at(-1) !== id) stops.push(id);
     }

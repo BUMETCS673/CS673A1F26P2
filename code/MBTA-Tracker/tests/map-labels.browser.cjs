@@ -99,10 +99,17 @@ fs.mkdirSync(root, { recursive: true });
     fs.writeFileSync(root + "/" + name, Buffer.from(r.data, "base64"));
   };
 
-  const select = async (index, value) =>
-    ev(
-      `(()=>{const s=document.querySelectorAll("select")[${index}];s.value=${JSON.stringify(value)};s.dispatchEvent(new Event("change",{bubbles:true}));})()`,
-    );
+  const select = async (index, value) => {
+    await ev(`(()=>{
+      const input=document.querySelectorAll('input[role="combobox"]')[${index}];
+      input.focus();
+      input.dispatchEvent(new FocusEvent("focusin",{bubbles:true}));
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,${JSON.stringify(source.stations[value].name)});
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+    })()`);
+    await wait(`!!document.querySelector('[data-station-option="${value}"]')`);
+    await ev(`document.querySelector('[data-station-option="${value}"]').click()`);
+  };
 
   const click = async (text) =>
     ev(
@@ -136,7 +143,7 @@ fs.mkdirSync(root, { recursive: true });
     });
   });
   await send("Fetch.enable", {
-    patterns: [{ urlPattern: "*/api/b-snapshot*" }],
+    patterns: [{ urlPattern: "*/api/journey-snapshot*" }],
   });
 
   await send("Page.enable");

@@ -33,6 +33,21 @@ function fixture() {
   };
 }
 
+test("rate-limit backoff survives switching to a different itinerary cache", async () => {
+  const f = fixture();
+  const rateLimit = { until: 0 };
+  const first = createSharedMbtaCache({
+    predictions: async () => { throw Object.assign(new Error("limit"), { status: 429, retryAfter: "120" }); },
+  }, f.now, rateLimit);
+  const second = createSharedMbtaCache(f.loaders, f.now, rateLimit);
+  await assert.rejects(first.read("predictions"));
+  await assert.rejects(second.read("predictions"), (error) => error.status === 429);
+  assert.equal(f.counts.predictions, 0);
+  f.advance(120000);
+  await second.read("predictions");
+  assert.equal(f.counts.predictions, 1);
+});
+
 test("cold load, swaps, concurrent refreshes and cooldown boundaries have bounded fanout", async () => {
   const f = fixture(),
     cache = createSharedMbtaCache(f.loaders, f.now);

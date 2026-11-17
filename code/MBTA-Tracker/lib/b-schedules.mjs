@@ -18,7 +18,7 @@ export function journeyScheduledTrains(document, journey, now = Date.now()) {
     .filter((item) => item.type === "trip").map((item) => [item.id, item.attributes]));
   const seen = new Set();
   return records.filter((item) =>
-    relation(item, "route") === "Green-B" &&
+    (journey.routes ?? [journey.route ?? "Green-B"]).includes(relation(item, "route")) &&
     item.attributes.direction_id === journey.direction && atStop(item, origin) &&
     item.attributes.pickup_type !== 1 &&
     timestamp(item.attributes.departure_time) >= now &&
@@ -29,7 +29,7 @@ export function journeyScheduledTrains(document, journey, now = Date.now()) {
       if (!trip || !item.serviceDate || seen.has(key)) return [];
       const target = records.find((other) =>
         other.serviceDate === item.serviceDate && relation(other, "trip") === trip &&
-        relation(other, "route") === "Green-B" &&
+        relation(other, "route") === relation(item, "route") &&
         other.attributes.direction_id === journey.direction && atStop(other, destination) &&
         other.attributes.drop_off_type !== 1 &&
         Number.isInteger(item.attributes.stop_sequence) &&
@@ -40,7 +40,7 @@ export function journeyScheduledTrains(document, journey, now = Date.now()) {
       if (!target) return [];
       seen.add(key);
       return [{
-        id: key, trip, serviceDate: item.serviceDate, source: "scheduled",
+        id: key, trip, route: relation(item, "route"), serviceDate: item.serviceDate, source: "scheduled",
         headsign: item.attributes.stop_headsign || trips.get(trip)?.headsign || journey.destination,
         departure: item.attributes.departure_time,
         destinationArrival: target.attributes.arrival_time,
@@ -60,7 +60,7 @@ export function scheduledFallback(snapshot, journey, liveTrains, now = Date.now(
         now - snapshot.schedulesCheckedAt > 300000))) return [];
   const stops = new Set([journey.stops[0], journey.stops.at(-1)].flatMap(stop => [stop.id, ...stop.platforms]));
   const unavailable = new Set(snapshot.predictions.data.filter(item =>
-    relation(item, "route") === "Green-B" && item.attributes.direction_id === journey.direction &&
+    (journey.routes ?? [journey.route ?? "Green-B"]).includes(relation(item, "route")) && item.attributes.direction_id === journey.direction &&
     stops.has(relation(item, "stop")) &&
     (["CANCELED", "CANCELLED", "SKIPPED"].includes(item.attributes.schedule_relationship) ||
       item.attributes.revenue === "NON_REVENUE" || item.attributes.revenue_status === "NON_REVENUE"),

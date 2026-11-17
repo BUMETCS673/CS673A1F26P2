@@ -34,14 +34,14 @@ export function scheduleWindows(now) {
       ];
 }
 
-export async function loadBSchedules(getSchedules, now = Date.now()) {
+export async function loadBSchedules(getSchedules, now = Date.now(), filters = {}) {
   const data = [], included = new Map();
   for (const window of scheduleWindows(now)) {
     let offset = 0;
     for (let page = 0; ; page++) {
       if (page >= 10) throw new Error("Schedule response exceeded the supported window.");
       const result = await getSchedules({
-        route: "Green-B", ...window, include: "trip", page_limit: 1000, page_offset: offset,
+        route: "Green-B", ...filters, ...window, include: filters.include ?? "trip", page_limit: 1000, page_offset: offset,
       });
       if (!Array.isArray(result.data)) throw new Error("Invalid MBTA schedule response.");
       data.push(...result.data.map((record) => ({ ...record, serviceDate: window.date })));

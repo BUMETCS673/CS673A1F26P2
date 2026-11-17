@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-13T19:22:10.240Z",
+  "generatedAt": "2026-11-14T11:48:21.576Z",
   "source": "MBTA V3 canonical rail patterns and typical Silver Line patterns",
   "sourceUrl": "https://api-v3.mbta.com/route_patterns?filter[route]=Red,Mattapan,Orange,Green-B,Green-C,Green-D,Green-E,Blue,741,742,743,751,749,746&include=representative_trip.stops,representative_trip.stops.parent_station",
   "routes": [
@@ -97,6 +97,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "3"
       ]
     },
     "4": {
@@ -107,6 +110,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "4"
       ]
     },
     "5": {
@@ -117,6 +123,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "5"
       ]
     },
     "55": {
@@ -127,6 +136,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "55"
       ]
     },
     "60": {
@@ -137,6 +149,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "60"
       ]
     },
     "61": {
@@ -147,6 +162,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "61"
       ]
     },
     "247": {
@@ -156,6 +174,9 @@
       "longitude": -71.035301,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "247"
       ]
     },
     "1787": {
@@ -166,6 +187,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "1787"
       ]
     },
     "1788": {
@@ -176,6 +200,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "1788"
       ]
     },
     "5093": {
@@ -186,6 +213,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "5093"
       ]
     },
     "5095": {
@@ -196,6 +226,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "5095"
       ]
     },
     "5098": {
@@ -206,6 +239,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "5098"
       ]
     },
     "5100": {
@@ -216,6 +252,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "5100"
       ]
     },
     "6537": {
@@ -225,6 +264,9 @@
       "longitude": -71.062581,
       "routes": [
         "751"
+      ],
+      "platforms": [
+        "6537"
       ]
     },
     "6538": {
@@ -234,6 +276,9 @@
       "longitude": -71.056003,
       "routes": [
         "751"
+      ],
+      "platforms": [
+        "6538"
       ]
     },
     "6555": {
@@ -243,6 +288,9 @@
       "longitude": -71.059655,
       "routes": [
         "751"
+      ],
+      "platforms": [
+        "6555"
       ]
     },
     "6565": {
@@ -253,6 +301,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "6565"
       ]
     },
     "6567": {
@@ -262,6 +313,9 @@
       "longitude": -71.062552,
       "routes": [
         "749"
+      ],
+      "platforms": [
+        "6567"
       ]
     },
     "8279": {
@@ -271,6 +325,9 @@
       "longitude": -71.064353,
       "routes": [
         "749"
+      ],
+      "platforms": [
+        "8279"
       ]
     },
     "15095": {
@@ -281,6 +338,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "15095"
       ]
     },
     "15176": {
@@ -291,6 +351,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "15176"
       ]
     },
     "17091": {
@@ -300,6 +363,9 @@
       "longitude": -71.020862,
       "routes": [
         "741"
+      ],
+      "platforms": [
+        "17091"
       ]
     },
     "17093": {
@@ -309,6 +375,9 @@
       "longitude": -71.017983,
       "routes": [
         "741"
+      ],
+      "platforms": [
+        "17093"
       ]
     },
     "17094": {
@@ -318,6 +387,9 @@
       "longitude": -71.017265,
       "routes": [
         "741"
+      ],
+      "platforms": [
+        "17094"
       ]
     },
     "17095": {
@@ -327,6 +399,9 @@
       "longitude": -71.020171,
       "routes": [
         "741"
+      ],
+      "platforms": [
+        "17095"
       ]
     },
     "17096": {
@@ -337,6 +412,9 @@
       "routes": [
         "741",
         "743"
+      ],
+      "platforms": [
+        "17096"
       ]
     },
     "19402": {
@@ -347,6 +425,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "19402"
       ]
     },
     "27092": {
@@ -356,6 +437,9 @@
       "longitude": -71.01882,
       "routes": [
         "741"
+      ],
+      "platforms": [
+        "27092"
       ]
     },
     "30249": {
@@ -365,6 +449,9 @@
       "longitude": -71.031986,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "30249"
       ]
     },
     "30250": {
@@ -374,6 +461,9 @@
       "longitude": -71.030268,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "30250"
       ]
     },
     "30251": {
@@ -383,6 +473,9 @@
       "longitude": -71.028419,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "30251"
       ]
     },
     "31255": {
@@ -392,6 +485,9 @@
       "longitude": -71.034476,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "31255"
       ]
     },
     "31256": {
@@ -401,6 +497,9 @@
       "longitude": -71.034878,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "31256"
       ]
     },
     "31257": {
@@ -410,6 +509,9 @@
       "longitude": -71.031996,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "31257"
       ]
     },
     "31259": {
@@ -419,6 +521,9 @@
       "longitude": -71.027213,
       "routes": [
         "742"
+      ],
+      "platforms": [
+        "31259"
       ]
     },
     "49001": {
@@ -428,6 +533,9 @@
       "longitude": -71.062211,
       "routes": [
         "749"
+      ],
+      "platforms": [
+        "49001"
       ]
     },
     "49002": {
@@ -438,6 +546,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "49002"
       ]
     },
     "49003": {
@@ -448,6 +559,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "49003"
       ]
     },
     "place-alfcl": {
@@ -457,6 +571,9 @@
       "longitude": -71.141287,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70061"
       ]
     },
     "place-davis": {
@@ -466,6 +583,10 @@
       "longitude": -71.121815,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70063",
+        "70064"
       ]
     },
     "place-portr": {
@@ -475,6 +596,10 @@
       "longitude": -71.119149,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70065",
+        "70066"
       ]
     },
     "place-harsq": {
@@ -484,6 +609,10 @@
       "longitude": -71.118956,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70067",
+        "70068"
       ]
     },
     "place-cntsq": {
@@ -493,6 +622,10 @@
       "longitude": -71.103802,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70069",
+        "70070"
       ]
     },
     "place-knncl": {
@@ -502,6 +635,10 @@
       "longitude": -71.0861765,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70071",
+        "70072"
       ]
     },
     "place-chmnl": {
@@ -511,6 +648,10 @@
       "longitude": -71.070628,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70073",
+        "70074"
       ]
     },
     "place-pktrm": {
@@ -524,6 +665,15 @@
         "Green-C",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70075",
+        "70076",
+        "70196",
+        "70200",
+        "70197",
+        "70198",
+        "70199"
       ]
     },
     "place-dwnxg": {
@@ -534,6 +684,12 @@
       "routes": [
         "Red",
         "Orange"
+      ],
+      "platforms": [
+        "70077",
+        "70078",
+        "70020",
+        "70021"
       ]
     },
     "place-sstat": {
@@ -547,6 +703,13 @@
         "742",
         "743",
         "746"
+      ],
+      "platforms": [
+        "70079",
+        "70080",
+        "84611",
+        "74617",
+        "74611"
       ]
     },
     "place-brdwy": {
@@ -556,6 +719,10 @@
       "longitude": -71.056967,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70081",
+        "70082"
       ]
     },
     "place-andrw": {
@@ -565,6 +732,10 @@
       "longitude": -71.057655,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70083",
+        "70084"
       ]
     },
     "place-jfk": {
@@ -574,6 +745,12 @@
       "longitude": -71.052391,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70095",
+        "70085",
+        "70096",
+        "70086"
       ]
     },
     "place-nqncy": {
@@ -583,6 +760,10 @@
       "longitude": -71.029583,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70097",
+        "70098"
       ]
     },
     "place-wlsta": {
@@ -592,6 +773,10 @@
       "longitude": -71.0203369,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70099",
+        "70100"
       ]
     },
     "place-qnctr": {
@@ -601,6 +786,10 @@
       "longitude": -71.005409,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70101",
+        "70102"
       ]
     },
     "place-qamnl": {
@@ -610,6 +799,10 @@
       "longitude": -71.007153,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70103",
+        "70104"
       ]
     },
     "place-brntn": {
@@ -619,6 +812,9 @@
       "longitude": -71.0011385,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70105"
       ]
     },
     "place-shmnl": {
@@ -628,6 +824,10 @@
       "longitude": -71.053331,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70087",
+        "70088"
       ]
     },
     "place-fldcr": {
@@ -637,6 +837,10 @@
       "longitude": -71.061667,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70089",
+        "70090"
       ]
     },
     "place-smmnl": {
@@ -646,6 +850,10 @@
       "longitude": -71.065738,
       "routes": [
         "Red"
+      ],
+      "platforms": [
+        "70091",
+        "70092"
       ]
     },
     "place-asmnl": {
@@ -656,6 +864,11 @@
       "routes": [
         "Red",
         "Mattapan"
+      ],
+      "platforms": [
+        "70093",
+        "70094",
+        "70261"
       ]
     },
     "place-cedgr": {
@@ -665,6 +878,10 @@
       "longitude": -71.060394,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70263",
+        "70264"
       ]
     },
     "place-butlr": {
@@ -674,6 +891,10 @@
       "longitude": -71.062519,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70265",
+        "70266"
       ]
     },
     "place-miltt": {
@@ -683,6 +904,10 @@
       "longitude": -71.067266,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70267",
+        "70268"
       ]
     },
     "place-cenav": {
@@ -692,6 +917,10 @@
       "longitude": -71.073444,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70269",
+        "70270"
       ]
     },
     "place-valrd": {
@@ -701,6 +930,10 @@
       "longitude": -71.081343,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70271",
+        "70272"
       ]
     },
     "place-capst": {
@@ -710,6 +943,10 @@
       "longitude": -71.087338,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70273",
+        "70274"
       ]
     },
     "place-matt": {
@@ -719,6 +956,10 @@
       "longitude": -71.092486,
       "routes": [
         "Mattapan"
+      ],
+      "platforms": [
+        "70275",
+        "70276"
       ]
     },
     "place-ogmnl": {
@@ -728,6 +969,9 @@
       "longitude": -71.071097,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70036"
       ]
     },
     "place-mlmnl": {
@@ -737,6 +981,10 @@
       "longitude": -71.07411,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70034",
+        "70035"
       ]
     },
     "place-welln": {
@@ -746,6 +994,10 @@
       "longitude": -71.077082,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70032",
+        "70033"
       ]
     },
     "place-astao": {
@@ -755,6 +1007,10 @@
       "longitude": -71.077257,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70278",
+        "70279"
       ]
     },
     "place-sull": {
@@ -764,6 +1020,10 @@
       "longitude": -71.076994,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70030",
+        "70031"
       ]
     },
     "place-ccmnl": {
@@ -773,6 +1033,10 @@
       "longitude": -71.069533,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70028",
+        "70029"
       ]
     },
     "place-north": {
@@ -784,6 +1048,12 @@
         "Orange",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70026",
+        "70027",
+        "70206",
+        "70205"
       ]
     },
     "place-haecl": {
@@ -795,6 +1065,12 @@
         "Orange",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70024",
+        "70025",
+        "70204",
+        "70203"
       ]
     },
     "place-state": {
@@ -805,6 +1081,12 @@
       "routes": [
         "Orange",
         "Blue"
+      ],
+      "platforms": [
+        "70022",
+        "70023",
+        "70041",
+        "70042"
       ]
     },
     "place-chncl": {
@@ -814,6 +1096,10 @@
       "longitude": -71.062752,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70018",
+        "70019"
       ]
     },
     "place-tumnl": {
@@ -823,6 +1109,10 @@
       "longitude": -71.063917,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70016",
+        "70017"
       ]
     },
     "place-bbsta": {
@@ -832,6 +1122,10 @@
       "longitude": -71.075727,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70014",
+        "70015"
       ]
     },
     "place-masta": {
@@ -841,6 +1135,10 @@
       "longitude": -71.083423,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70012",
+        "70013"
       ]
     },
     "place-rugg": {
@@ -850,6 +1148,10 @@
       "longitude": -71.088961,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70010",
+        "70011"
       ]
     },
     "place-rcmnl": {
@@ -859,6 +1161,10 @@
       "longitude": -71.095451,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70008",
+        "70009"
       ]
     },
     "place-jaksn": {
@@ -868,6 +1174,10 @@
       "longitude": -71.099592,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70006",
+        "70007"
       ]
     },
     "place-sbmnl": {
@@ -877,6 +1187,10 @@
       "longitude": -71.104248,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70004",
+        "70005"
       ]
     },
     "place-grnst": {
@@ -886,6 +1200,10 @@
       "longitude": -71.107414,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70002",
+        "70003"
       ]
     },
     "place-forhl": {
@@ -895,6 +1213,9 @@
       "longitude": -71.113943,
       "routes": [
         "Orange"
+      ],
+      "platforms": [
+        "70001"
       ]
     },
     "place-gover": {
@@ -908,6 +1229,12 @@
         "Green-D",
         "Green-E",
         "Blue"
+      ],
+      "platforms": [
+        "70202",
+        "70201",
+        "70039",
+        "70040"
       ]
     },
     "place-boyls": {
@@ -920,6 +1247,10 @@
         "Green-C",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70159",
+        "70158"
       ]
     },
     "place-armnl": {
@@ -932,6 +1263,10 @@
         "Green-C",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70157",
+        "70156"
       ]
     },
     "place-coecl": {
@@ -944,6 +1279,10 @@
         "Green-C",
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70155",
+        "70154"
       ]
     },
     "place-hymnl": {
@@ -955,6 +1294,10 @@
         "Green-B",
         "Green-C",
         "Green-D"
+      ],
+      "platforms": [
+        "70153",
+        "70152"
       ]
     },
     "place-kencl": {
@@ -966,6 +1309,12 @@
         "Green-B",
         "Green-C",
         "Green-D"
+      ],
+      "platforms": [
+        "71151",
+        "71150",
+        "70151",
+        "70150"
       ]
     },
     "place-bland": {
@@ -975,6 +1324,10 @@
       "longitude": -71.100258,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70149",
+        "70148"
       ]
     },
     "place-buest": {
@@ -984,6 +1337,10 @@
       "longitude": -71.103889,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70147",
+        "70146"
       ]
     },
     "place-bucen": {
@@ -993,6 +1350,10 @@
       "longitude": -71.106865,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70145",
+        "70144"
       ]
     },
     "place-amory": {
@@ -1002,6 +1363,10 @@
       "longitude": -71.114748,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "170141",
+        "170140"
       ]
     },
     "place-babck": {
@@ -1011,6 +1376,10 @@
       "longitude": -71.119924,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "170137",
+        "170136"
       ]
     },
     "place-brico": {
@@ -1020,6 +1389,10 @@
       "longitude": -71.125031,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70135",
+        "70134"
       ]
     },
     "place-harvd": {
@@ -1029,6 +1402,10 @@
       "longitude": -71.131355,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70131",
+        "70130"
       ]
     },
     "place-grigg": {
@@ -1038,6 +1415,10 @@
       "longitude": -71.134949,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70129",
+        "70128"
       ]
     },
     "place-alsgr": {
@@ -1047,6 +1428,10 @@
       "longitude": -71.137955,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70127",
+        "70126"
       ]
     },
     "place-wrnst": {
@@ -1056,6 +1441,10 @@
       "longitude": -71.140457,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70125",
+        "70124"
       ]
     },
     "place-wascm": {
@@ -1065,6 +1454,10 @@
       "longitude": -71.142853,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70121",
+        "70120"
       ]
     },
     "place-sthld": {
@@ -1074,6 +1467,10 @@
       "longitude": -71.146202,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70117",
+        "70116"
       ]
     },
     "place-chswk": {
@@ -1083,6 +1480,10 @@
       "longitude": -71.150711,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70115",
+        "70114"
       ]
     },
     "place-chill": {
@@ -1092,6 +1493,10 @@
       "longitude": -71.15316,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70113",
+        "70112"
       ]
     },
     "place-sougr": {
@@ -1101,6 +1506,10 @@
       "longitude": -71.157661,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70111",
+        "70110"
       ]
     },
     "place-lake": {
@@ -1110,6 +1519,10 @@
       "longitude": -71.166769,
       "routes": [
         "Green-B"
+      ],
+      "platforms": [
+        "70107",
+        "70106"
       ]
     },
     "place-smary": {
@@ -1119,6 +1532,10 @@
       "longitude": -71.107353,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70211",
+        "70212"
       ]
     },
     "place-hwsst": {
@@ -1128,6 +1545,10 @@
       "longitude": -71.111145,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70213",
+        "70214"
       ]
     },
     "place-kntst": {
@@ -1137,6 +1558,10 @@
       "longitude": -71.114197,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70215",
+        "70216"
       ]
     },
     "place-stpul": {
@@ -1146,6 +1571,10 @@
       "longitude": -71.116997,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70217",
+        "70218"
       ]
     },
     "place-cool": {
@@ -1155,6 +1584,10 @@
       "longitude": -71.121263,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70219",
+        "70220"
       ]
     },
     "place-sumav": {
@@ -1164,6 +1597,10 @@
       "longitude": -71.12561,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70223",
+        "70224"
       ]
     },
     "place-bndhl": {
@@ -1173,6 +1610,10 @@
       "longitude": -71.129082,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70225",
+        "70226"
       ]
     },
     "place-fbkst": {
@@ -1182,6 +1623,10 @@
       "longitude": -71.131073,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70227",
+        "70228"
       ]
     },
     "place-bcnwa": {
@@ -1191,6 +1636,10 @@
       "longitude": -71.13533,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70229",
+        "70230"
       ]
     },
     "place-tapst": {
@@ -1200,6 +1649,10 @@
       "longitude": -71.138702,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70231",
+        "70232"
       ]
     },
     "place-denrd": {
@@ -1209,6 +1662,10 @@
       "longitude": -71.142156,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70233",
+        "70234"
       ]
     },
     "place-engav": {
@@ -1218,6 +1675,10 @@
       "longitude": -71.144852,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70235",
+        "70236"
       ]
     },
     "place-clmnl": {
@@ -1227,6 +1688,10 @@
       "longitude": -71.149326,
       "routes": [
         "Green-C"
+      ],
+      "platforms": [
+        "70237",
+        "70238"
       ]
     },
     "place-unsqu": {
@@ -1236,6 +1701,10 @@
       "longitude": -71.094761,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70504",
+        "70503"
       ]
     },
     "place-lech": {
@@ -1246,6 +1715,10 @@
       "routes": [
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70502",
+        "70501"
       ]
     },
     "place-spmnl": {
@@ -1256,6 +1729,10 @@
       "routes": [
         "Green-D",
         "Green-E"
+      ],
+      "platforms": [
+        "70208",
+        "70207"
       ]
     },
     "place-fenwy": {
@@ -1265,6 +1742,10 @@
       "longitude": -71.104213,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70187",
+        "70186"
       ]
     },
     "place-longw": {
@@ -1274,6 +1755,10 @@
       "longitude": -71.109956,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70183",
+        "70182"
       ]
     },
     "place-bvmnl": {
@@ -1283,6 +1768,10 @@
       "longitude": -71.116857,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70181",
+        "70180"
       ]
     },
     "place-brkhl": {
@@ -1292,6 +1781,10 @@
       "longitude": -71.126683,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70179",
+        "70178"
       ]
     },
     "place-bcnfd": {
@@ -1301,6 +1794,10 @@
       "longitude": -71.140455,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70177",
+        "70176"
       ]
     },
     "place-rsmnl": {
@@ -1310,6 +1807,10 @@
       "longitude": -71.148758,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70175",
+        "70174"
       ]
     },
     "place-chhil": {
@@ -1319,6 +1820,10 @@
       "longitude": -71.164699,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70173",
+        "70172"
       ]
     },
     "place-newto": {
@@ -1328,6 +1833,10 @@
       "longitude": -71.192414,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70171",
+        "70170"
       ]
     },
     "place-newtn": {
@@ -1337,6 +1846,10 @@
       "longitude": -71.205509,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70169",
+        "70168"
       ]
     },
     "place-eliot": {
@@ -1346,6 +1859,10 @@
       "longitude": -71.216684,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70167",
+        "70166"
       ]
     },
     "place-waban": {
@@ -1355,6 +1872,10 @@
       "longitude": -71.230609,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70165",
+        "70164"
       ]
     },
     "place-woodl": {
@@ -1364,6 +1885,10 @@
       "longitude": -71.243362,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70163",
+        "70162"
       ]
     },
     "place-river": {
@@ -1373,6 +1898,10 @@
       "longitude": -71.252685,
       "routes": [
         "Green-D"
+      ],
+      "platforms": [
+        "70161",
+        "70160"
       ]
     },
     "place-mdftf": {
@@ -1382,6 +1911,10 @@
       "longitude": -71.117044,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70512",
+        "70511"
       ]
     },
     "place-balsq": {
@@ -1391,6 +1924,10 @@
       "longitude": -71.111003,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70510",
+        "70509"
       ]
     },
     "place-mgngl": {
@@ -1400,6 +1937,10 @@
       "longitude": -71.1063879,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70508",
+        "70507"
       ]
     },
     "place-gilmn": {
@@ -1409,6 +1950,10 @@
       "longitude": -71.096766,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70506",
+        "70505"
       ]
     },
     "place-esomr": {
@@ -1418,6 +1963,10 @@
       "longitude": -71.086625,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70514",
+        "70513"
       ]
     },
     "place-prmnl": {
@@ -1427,6 +1976,10 @@
       "longitude": -71.081696,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70239",
+        "70240"
       ]
     },
     "place-symcl": {
@@ -1436,6 +1989,10 @@
       "longitude": -71.085056,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70241",
+        "70242"
       ]
     },
     "place-nuniv": {
@@ -1445,6 +2002,10 @@
       "longitude": -71.088806,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70243",
+        "70244"
       ]
     },
     "place-mfa": {
@@ -1454,6 +2015,10 @@
       "longitude": -71.095512,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70245",
+        "70246"
       ]
     },
     "place-lngmd": {
@@ -1463,6 +2028,10 @@
       "longitude": -71.100052,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70247",
+        "70248"
       ]
     },
     "place-brmnl": {
@@ -1472,6 +2041,10 @@
       "longitude": -71.104609,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70249",
+        "70250"
       ]
     },
     "place-fenwd": {
@@ -1481,6 +2054,10 @@
       "longitude": -71.105728,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70251",
+        "70252"
       ]
     },
     "place-mispk": {
@@ -1490,6 +2067,10 @@
       "longitude": -71.109756,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70253",
+        "70254"
       ]
     },
     "place-rvrwy": {
@@ -1499,6 +2080,10 @@
       "longitude": -71.111931,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70255",
+        "70256"
       ]
     },
     "place-bckhl": {
@@ -1508,6 +2093,10 @@
       "longitude": -71.111313,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70257",
+        "70258"
       ]
     },
     "place-hsmnl": {
@@ -1517,6 +2106,9 @@
       "longitude": -71.110252,
       "routes": [
         "Green-E"
+      ],
+      "platforms": [
+        "70260"
       ]
     },
     "place-wondl": {
@@ -1526,6 +2118,10 @@
       "longitude": -70.991648,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70059",
+        "70060"
       ]
     },
     "place-rbmnl": {
@@ -1535,6 +2131,10 @@
       "longitude": -70.9925332,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70057",
+        "70058"
       ]
     },
     "place-bmmnl": {
@@ -1544,6 +2144,10 @@
       "longitude": -70.9923194,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70055",
+        "70056"
       ]
     },
     "place-sdmnl": {
@@ -1553,6 +2157,10 @@
       "longitude": -70.9971226,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70053",
+        "70054"
       ]
     },
     "place-orhte": {
@@ -1562,6 +2170,10 @@
       "longitude": -71.004736,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70051",
+        "70052"
       ]
     },
     "place-wimnl": {
@@ -1571,6 +2183,10 @@
       "longitude": -71.0228654,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70049",
+        "70050"
       ]
     },
     "place-aport": {
@@ -1581,6 +2197,12 @@
       "routes": [
         "Blue",
         "743"
+      ],
+      "platforms": [
+        "70047",
+        "70048",
+        "7096",
+        "7097"
       ]
     },
     "place-mvbcl": {
@@ -1590,6 +2212,10 @@
       "longitude": -71.0395296,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70045",
+        "70046"
       ]
     },
     "place-aqucl": {
@@ -1599,6 +2225,10 @@
       "longitude": -71.051652,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70043",
+        "70044"
       ]
     },
     "place-bomnl": {
@@ -1608,6 +2238,10 @@
       "longitude": -71.062037,
       "routes": [
         "Blue"
+      ],
+      "platforms": [
+        "70838",
+        "70038"
       ]
     },
     "place-crtst": {
@@ -1620,6 +2254,10 @@
         "742",
         "743",
         "746"
+      ],
+      "platforms": [
+        "74612",
+        "74616"
       ]
     },
     "place-wtcst": {
@@ -1632,6 +2270,10 @@
         "742",
         "743",
         "746"
+      ],
+      "platforms": [
+        "74613",
+        "74615"
       ]
     },
     "place-conrd": {
@@ -1644,6 +2286,10 @@
         "742",
         "743",
         "746"
+      ],
+      "platforms": [
+        "74624",
+        "74614"
       ]
     },
     "place-estav": {
@@ -1653,6 +2299,10 @@
       "longitude": -71.023859,
       "routes": [
         "743"
+      ],
+      "platforms": [
+        "74637",
+        "74636"
       ]
     },
     "place-boxdt": {
@@ -1662,6 +2312,10 @@
       "longitude": -71.028365,
       "routes": [
         "743"
+      ],
+      "platforms": [
+        "74635",
+        "74634"
       ]
     },
     "place-belsq": {
@@ -1671,6 +2325,10 @@
       "longitude": -71.033884,
       "routes": [
         "743"
+      ],
+      "platforms": [
+        "74633",
+        "74632"
       ]
     },
     "place-chels": {
@@ -1680,6 +2338,10 @@
       "longitude": -71.041314,
       "routes": [
         "743"
+      ],
+      "platforms": [
+        "74631",
+        "74630"
       ]
     },
     "place-nubn": {
@@ -1690,6 +2352,9 @@
       "routes": [
         "751",
         "749"
+      ],
+      "platforms": [
+        "64"
       ]
     }
   },

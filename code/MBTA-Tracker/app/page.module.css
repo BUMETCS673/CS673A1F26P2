@@ -1,8 +1,8 @@
 /*
  * AI-ASSISTED
- * Tool: OpenAI Codex
+ * Tool: OpenAI Codex; GitHub Copilot
  * Model: Exact model not recorded
- * Prompt Summary: Style the planner sidebar, station selectors, train cards and responsive page layout.
+ * Prompt Summary: Style the planner sidebar, station search with line badges, leave-time controls, result tabs, split transfer panels, train cards and responsive page layout.
  * AI Contribution: (~90%)
  * Estimate basis: Owner assessment, not measured code authorship.
  */
@@ -54,16 +54,25 @@
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0,1fr) 360px;
+  grid-template-columns: minmax(0,1fr) 400px;
   align-items: start;
 }
 
 .sidebar {
-  padding: 24px;
+  padding: 24px 20px;
   border-left: 1px solid #dbe3df;
   max-height: calc(100dvh - 61px);
   overflow-y: auto;
   scroll-margin-top: 16px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .plannerHeading h2 {
@@ -77,75 +86,447 @@
   color: var(--muted);
 }
 
-.fields {
+.stopList {
+  --stop-gap: 8px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 44px;
-  gap: 16px 10px;
+  gap: var(--stop-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.fields label {
-  grid-column: 1;
-  min-width: 0;
-  display: grid;
-  gap: 8px;
-}
-
-.fields label>span {
+.stopRow {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 8px;
 }
 
-.fields b {
-  display: inline-grid;
+.movedRow {
+  animation: movedFlash 1.8s ease-out;
+}
+
+@keyframes movedFlash {
+  from {
+    background: #fff1bf;
+    box-shadow: 0 0 0 4px #fff1bf;
+  }
+
+  to {
+    background: transparent;
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
+
+.stopMarker {
+  position: relative;
+  display: grid;
   place-items: center;
-  height: 21px;
-  width: 21px;
+  flex: 0 0 24px;
+  height: 24px;
   border-radius: 50%;
   background: #e4eee8;
   color: #126637;
   font-size: 12px;
+  font-weight: 700;
 }
 
-.fields select {
+.activeMarker {
+  background: var(--green);
+  color: #fff;
+}
+
+/* Dotted connector from each stop marker to the next one. */
+.stopRow:not(:last-child) .stopMarker::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 4px);
+  left: calc(50% - 1px);
+  height: calc(var(--stop-gap) + 8px);
+  border-left: 2px dotted #93ad9d;
+}
+
+.stationField {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.searchInput {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   width: 100%;
-  padding: 12px 30px 12px 10px;
+  min-height: 40px;
+  padding: 6px 8px;
   background: #fff;
   border: 1px solid #b6c7bd;
   border-radius: 6px;
   color: var(--ink);
-  font: inherit;
 }
 
-.activeField select {
+.searchInput .routeBadge {
+  width: 26px;
+  height: 26px;
+}
+
+.timeControl {
+  position: relative;
+  flex: 0 0 104px;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border: 1px solid #b6c7bd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.timeControl:has(input:focus) {
   border-color: var(--green);
   box-shadow: 0 0 0 1px var(--green);
 }
 
-.fields select:focus-visible,.page button:focus-visible,.page a:focus-visible {
+.timeControl:has(input:focus-visible) {
   outline: 3px solid #117fba;
   outline-offset: 3px;
 }
 
-.swap {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  margin-top: 29px;
-  width: 44px;
-  height: 44px;
-  background: #fff;
-  color: var(--green);
-  border: 1px solid #b6c7bd;
-  border-radius: 50%;
-  font-size: 20px;
+.timeControl input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
   cursor: pointer;
 }
 
-.swap:disabled {
-  opacity: .4;
+.timeControl input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.timeControl[data-empty] input:not(:focus),
+.timeControl[data-empty] input:not(:focus)::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.timePlaceholder {
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.timePlaceholder::after {
+  content: " 🕒";
+  font-size: 11px;
+}
+
+.timeControl input:focus ~ .timePlaceholder {
+  display: none;
+}
+
+.clearTime {
+  flex: 0 0 22px;
+  height: 22px;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.clearTime:hover {
+  background: #edf3f0;
+  color: var(--ink);
+}
+
+.tomorrowTag {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.finalStop {
+  flex: 0 0 104px;
+  display: grid;
+  place-items: center;
+  height: 40px;
+  border: 1px dashed #b6c7bd;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.removeStop {
+  flex: 0 0 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.removeStop:hover {
+  background: #fbefee;
+  color: #8c1d18;
+}
+
+.stopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-left: 32px;
+}
+
+.addStop,.reverseStops {
+  padding: 6px 10px;
+  border: 1px solid #b6c7bd;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--green);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addStop {
+  border-style: dashed;
+}
+
+.reverseStops {
+  margin-left: auto;
+}
+
+.addStop:disabled,.reverseStops:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.stopCount {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.sortNotice {
+  margin: 10px 0 0;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: #fff7dd;
+  color: #6b5310;
+  font-size: 12px;
+}
+
+.sortNotice:empty {
+  margin: 0;
+  padding: 0;
+}
+
+.resultsArea {
+  margin-top: 14px;
+}
+
+.resultsArea .journeySummary {
+  margin-top: 0;
+}
+
+.segmentTabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: inset 0 -1px #dbe3df;
+  scrollbar-width: thin;
+}
+
+.segmentTab {
+  flex: 1 0 70px;
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  padding: 7px 4px 6px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.segmentTab strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.segmentTab small {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.segmentTab:hover,.segmentTab[aria-selected="true"] {
+  background: #f1f7f3;
+}
+
+.segmentTab[aria-selected="true"] {
+  border-bottom-color: var(--tab-color, var(--green));
+}
+
+.incompleteTab {
+  opacity: .6;
+}
+
+.searchInput input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  color: var(--ink);
+  background: #fff;
+  padding: 4px 0;
+  font: inherit;
+  text-overflow: ellipsis;
+}
+
+.searchToggle {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 4px;
+  cursor: pointer;
+}
+
+.activeField .searchInput {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green);
+}
+
+.searchInput input:focus-visible,.page button:focus-visible,.page a:focus-visible,.legScroll:focus-visible {
+  outline: 3px solid #117fba;
+  outline-offset: 3px;
+}
+
+.routeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line-color);
+  border-radius: 50%;
+  color: var(--line-color);
+  background: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.stationOptions {
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 5px;
+  max-height: 270px;
+  overflow-y: auto;
+  border: 1px solid #b6c7bd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px #203c2e24;
+  padding: 4px;
+}
+
+.stationOption {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.stationBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-width: 92px;
+  flex-shrink: 0;
+}
+
+.highlightedOption,.stationOption:hover {
+  background: #edf3f0;
+}
+
+.arrivalPanels {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.legPanel {
+  min-width: 0;
+  border: 1px solid #dbe3df;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.legHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #f7faf8;
+  border-bottom: 1px solid #dbe3df;
+}
+
+.legHeading p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.legScroll {
+  padding: 0 12px 12px;
+  height: clamp(320px, calc(100dvh - 420px), 720px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+
+.splitPanels .legScroll {
+  height: clamp(180px, calc((100dvh - 460px) / var(--leg-count)), 300px);
+}
+
+.legScroll .results {
+  margin-top: 12px;
 }
 
 .journeySummary {
@@ -231,6 +612,42 @@
   text-decoration: underline;
 }
 
+.suspension {
+  border-radius: 6px;
+  border-left: 3px solid #b3261e;
+  padding: 13px;
+  margin: 16px 0;
+  background: #fbefee;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.suspension strong {
+  color: #8c1d18;
+}
+
+.suspension p {
+  margin: 7px 0;
+}
+
+.suspension a {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.suspendedPill {
+  margin-left: auto;
+  flex-shrink: 0;
+  border: 1px solid #e3b5b1;
+  border-radius: 20px;
+  padding: 3px 9px;
+  background: #fbefee;
+  color: #8c1d18;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .trainCard {
   margin: 12px 0;
   padding: 14px;
@@ -249,6 +666,15 @@
 
 .trainLabel {
   font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.trainLabel .routeBadge {
+  width: 23px;
+  height: 23px;
+  font-size: 10px;
 }
 
 .trainDeparture {
@@ -260,7 +686,7 @@
 
 .trainDeparture>strong {
   font-size: 32px;
-  color: var(--green);
+  color: var(--line-text, var(--green));
   white-space: nowrap;
 }
 
@@ -344,7 +770,95 @@
 
 @media(min-width:1500px) {
   .workspace {
-    grid-template-columns: minmax(0,1fr) 390px;
+    grid-template-columns: minmax(0,1fr) 430px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .movedRow {
+    animation: none;
+    background: #fff7dd;
+  }
+}
+
+@media(min-width:801px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 61px);
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .sidebar > * {
+    flex-shrink: 0;
+  }
+
+  .plannerHeading p {
+    margin-bottom: 16px;
+  }
+
+  .sidebar > .resultsArea,.segmentResults {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resultsArea > *,.segmentResults > * {
+    flex-shrink: 0;
+  }
+
+  .resultsArea > .segmentResults,.segmentResults > .arrivalPanels {
+    flex: 1 1 0;
+  }
+
+  .segmentResults > .arrivalPanels {
+    min-height: calc(var(--leg-count) * 130px);
+    grid-template-rows: repeat(var(--leg-count), minmax(0, 1fr));
+  }
+
+  .legPanel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .legHeading {
+    flex-shrink: 0;
+    padding: 9px 10px;
+  }
+
+  .legScroll,.splitPanels .legScroll {
+    flex: 1 1 0;
+    height: auto;
+    min-height: 0;
+  }
+
+  .legScroll .trainCard {
+    padding: 10px;
+    margin: 9px 0;
+  }
+
+  .legScroll .trainDeparture {
+    margin: 8px 0;
+  }
+}
+
+@media(min-width:801px) and (max-height:800px) {
+  .plannerHeading p {
+    margin-bottom: 8px;
+  }
+
+  .stopList {
+    --stop-gap: 6px;
+  }
+
+  .resultsArea {
+    margin-top: 10px;
+  }
+
+  .journeySummary {
+    margin-top: 12px;
+    padding: 10px 0;
   }
 }
 
@@ -372,4 +886,173 @@
     max-height: none;
     overflow: visible;
   }
+}
+
+
+/* Saved Routes & History redesign */
+.searchActions { display:flex; align-items:center; gap:10px; margin:16px 0 18px; }
+.searchButton { flex:1; min-height:44px; border:0; border-radius:22px; background:linear-gradient(110deg,#07823d,#007a36); color:#fff; font:inherit; font-weight:700; font-size:15px; cursor:pointer; }
+.searchButton span { font-size:25px; vertical-align:-2px; margin-right:6px; }
+.searchButton:disabled { opacity:.5; cursor:not-allowed; }
+.favoriteAction { width:44px; height:44px; flex:none; border-radius:50%; border:1px solid #b6c7bd; color:#087c3c; background:#fff; font-size:29px; line-height:1; cursor:pointer; }
+.favoriteActionActive { color:#eda80b; }
+.favoriteAction:disabled { opacity:.45; cursor:not-allowed; }
+.historyPanel { border:1px solid #80b496; border-radius:10px; overflow:hidden; margin:14px 0 20px; background:#fff; }
+.historyToggle { display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:13px 14px; border:0; background:linear-gradient(110deg,#f0f9f3,#f9fcfa); color:var(--ink); cursor:pointer; font:inherit; }
+.bookmarkIcon { font-size:28px; color:#087b41; width:25px; text-align:center; }
+.historyTitle { display:grid; gap:4px; flex:1; min-width:0; }
+.historyTitle strong { font-size:14px; }
+.historyTitle small { font-size:12px; color:var(--muted); }
+.chevron { font-size:25px; line-height:1; }
+.historyBody { border-top:1px solid #e1ebe5; padding:10px; }
+.historyTabs { display:grid; grid-template-columns:1fr 1fr; border:1px solid #cbd9d0; border-radius:8px; overflow:hidden; }
+.historyTabs button { min-width:0; padding:10px 5px; border:0; background:#fff; color:var(--ink); font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+.historyTabs button+button { border-left:1px solid #cbd9d0; }
+.historyTabs .historyTabActive { background:#007a3d; color:#fff; }
+.historyList { max-height:260px; min-height:52px; overflow-y:auto; margin:8px 0 10px; scrollbar-width:thin; }
+.historyEmpty { margin:14px 5px; font-size:12px; color:var(--muted); }
+.historyRow { display:flex; align-items:center; min-height:49px; gap:4px; border-bottom:1px solid #e2e9e4; }
+.rowStar { border:0; background:none; color:#87968e; font-size:24px; cursor:pointer; width:29px; flex:none; }
+.rowStarSaved { color:#f0ac0d; }
+.routeChoice { display:flex; align-items:center; justify-content:space-between; gap:5px; flex:1; min-width:0; padding:10px 2px; text-align:left; border:0; background:none; color:var(--ink); font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+.routeChoice span:first-child { overflow-wrap:anywhere; }
+.rowChevron { font-size:24px; flex:none; font-weight:400; }
+.rowDelete { flex:none; width:20px; border:0; background:none; color:#89958e; cursor:pointer; font-size:19px; }
+.rowDelete:hover { color:#b52626; }
+.clearHistory { width:100%; min-height:39px; background:#fff; border:1px solid #b9cfc1; border-radius:8px; font:inherit; font-size:12px; font-weight:700; cursor:pointer; color:var(--ink); }
+.clearHistory:disabled { opacity:.5; cursor:not-allowed; }
+.clearHistory span { margin-right:5px; }
+.searchHint { margin:16px 0; font-size:12px; line-height:1.5; color:var(--muted); }
+.modalBackdrop { position:fixed; inset:0; z-index:1000; background:rgba(16,29,24,.46); display:flex; align-items:center; justify-content:center; padding:20px; }
+.confirmDialog { position:relative; width:min(100%,420px); padding:30px; border-radius:18px; background:#fff; box-shadow:0 18px 55px #10231b35; color:var(--ink); }
+.modalClose { position:absolute; top:14px; right:17px; background:none; border:0; font-size:29px; cursor:pointer; }
+.modalDeleteIcon { display:grid; place-items:center; width:50px; height:50px; border-radius:50%; background:#ffe5e5; color:#b91c1c; font-size:26px; margin-bottom:18px; }
+.confirmDialog h2 { font-size:23px; margin:0 0 12px; }
+.confirmDialog p { color:var(--muted); font-size:15px; line-height:1.6; margin:0 0 28px; }
+.modalActions { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modalActions button { min-height:44px; border-radius:10px; font:inherit; font-weight:700; cursor:pointer; }
+.cancelButton { background:#fff; border:1px solid #829d8c; color:var(--ink); }
+.confirmButton { background:#007a3d; color:#fff; border:1px solid #007a3d; }
+@media(max-width:800px) { .historyList { max-height:220px; } }
+
+/* Default Route */
+
+.defaultButton {
+  flex: none;
+  padding: 6px 8px;
+  border: 1px solid #b7d3c1;
+  border-radius: 6px;
+  background: #fff;
+  color: #087a3c;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.defaultButton:hover {
+  background: #edf8f0;
+}
+
+.defaultButtonActive {
+  background: #e5f5e9;
+  border-color: #07813c;
+  color: #056b33;
+}
+
+.defaultButtonActive:hover {
+  background: #d5eedc;
+}
+
+@media (max-width: 800px) {
+  .defaultButton {
+    padding: 5px;
+    font-size: 9px;
+  }
+}
+/* Favorite Routes Layout */
+
+.historyRow:has(.defaultButton) {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 28px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 3px;
+  padding: 10px 4px;
+  min-height: 72px;
+}
+
+.historyRow:has(.defaultButton) .rowStar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.historyRow:has(.defaultButton) .routeChoice {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0;
+  line-height: 1.45;
+  font-size: 12px;
+}
+
+.historyRow:has(.defaultButton) .rowDelete {
+  grid-column: 3;
+  grid-row: 1;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+}
+
+.historyRow .defaultButton {
+  grid-column: 2 / 4;
+  grid-row: 2;
+  justify-self: end;
+  padding: 6px 12px;
+  font-size: 11px;
+  border-radius: 7px;
+}
+
+@media (max-width: 800px) {
+  .historyRow .defaultButton {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Route History UI refinements: multi-stop readability and default status */
+
+.historyRow .routeChoice {
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.55;
+}
+
+.historyRow .routeChoice span:first-child {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.historyRow:has(.defaultButtonActive) {
+  background: #f5fbf6;
+  border-left: 3px solid #07813c;
+  padding-left: 6px;
+}
+
+.historyRow .defaultButtonActive {
+  background: #e5f5e9;
+  border: 1px solid #07813c;
+  color: #056b33;
+  font-weight: 800;
+}
+
+.historyRow .defaultButtonActive:focus-visible,
+.historyRow .routeChoice:focus-visible {
+  outline: 2px solid #07813c;
+  outline-offset: 2px;
 }
